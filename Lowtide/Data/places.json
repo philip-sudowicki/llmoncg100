@@ -1,0 +1,292 @@
+{
+  "version": 1,
+  "about": "Invented sample places for Lowtide v1. Offsets are metres east and north of the demo centre (the user's location, or central London). Each forecast holds 24 hourly values, the same every day.",
+  "places": [
+    {
+      "id": "marlow-street-library",
+      "name": "Marlow Street Library",
+      "category": "library",
+      "street": "Weaver St",
+      "offset": {"east": -70, "north": 120},
+      "hours": {"open": "09:00", "close": "19:00"},
+      "forecast": {
+        "noiseDB": [35, 35, 35, 35, 36, 36, 36, 36, 36, 40, 42, 50, 55, 52, 43, 47, 58, 55, 45, 38, 37, 36, 36, 35],
+        "sudden": [0.05, 0.06, 0.06, 0.07, 0.07, 0.08, 0.08, 0.09, 0.09, 0.1, 0.15, 0.2, 0.25, 0.2, 0.1, 0.15, 0.3, 0.3, 0.2, 0.1, 0.09, 0.08, 0.06, 0.05],
+        "light": [0, 0.01, 0.03, 0.04, 0.05, 0.06, 0.08, 0.09, 0.1, 0.3, 0.28, 0.27, 0.25, 0.23, 0.2, 0.23, 0.25, 0.28, 0.3, 0.2, 0.15, 0.1, 0.05, 0],
+        "crowd": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.25, 0.45, 0.55, 0.45, 0.15, 0.3, 0.6, 0.55, 0.3, 0.1, 0.08, 0.05, 0.02, 0],
+        "smell": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
+      },
+      "triggers": [
+        {"tag": "handDryer", "label": "Hand dryer in toilets"},
+        {"tag": "bell", "label": "Closing bell at 6:45pm"},
+        {"tag": "stripLights", "label": "Strip lights at the back"}
+      ],
+      "goodToKnow": [
+        {"kind": "quietSpace", "text": "Quiet study room on the first floor"},
+        {"kind": "staff", "text": "Staff trained in sensory awareness"},
+        {"kind": "stepFree", "text": "Step-free entrance and lift"}
+      ],
+      "busyPeriods": [
+        {"start": "11:00", "end": "13:30", "label": "toddler rhyme time and the lunch crowd"},
+        {"start": "15:30", "end": "17:30", "label": "the after-school rush"}
+      ],
+      "quietHour": {"days": "weekdays", "start": "09:00", "end": "10:00"},
+      "notes": {"light": "Soft daylight, strip lights at the back"}
+    },
+    {
+      "id": "holloway-reading-rooms",
+      "name": "Holloway Reading Rooms",
+      "category": "library",
+      "street": "Mill Lane",
+      "offset": {"east": 420, "north": 380},
+      "hours": {"open": "10:00", "close": "17:00"},
+      "forecast": {
+        "noiseDB": [34, 34, 35, 35, 36, 36, 36, 37, 37, 38, 38, 42, 45, 46, 41, 40, 40, 36, 36, 36, 36, 36, 36, 36],
+        "sudden": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.08, 0.1, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
+        "light": [0, 0.01, 0.02, 0.03, 0.04, 0.06, 0.07, 0.08, 0.09, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1, 0, 0, 0, 0, 0, 0],
+        "crowd": [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.2, 0.3, 0.35, 0.2, 0.17, 0.15, 0.05, 0, 0, 0, 0, 0, 0],
+        "smell": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
+      },
+      "triggers": [
+        {"tag": "cleaningProducts", "label": "Cleaning smells after 4pm"}
+      ],
+      "goodToKnow": [
+        {"kind": "quietSpace", "text": "Silent reading room with tall windows"},
+        {"kind": "seating", "text": "Single desks along the walls"},
+        {"kind": "stepFree", "text": "Step-free entrance on Mill Lane"}
+      ],
+      "busyPeriods": [],
+      "notes": {"light": "Natural light from tall windows", "noise": "Silent reading room"}
+    },
+    {
+      "id": "fern-and-finch",
+      "name": "Fern & Finch",
+      "category": "cafe",
+      "street": "Canal Row",
+      "offset": {"east": 130, "north": 230},
+      "hours": {"open": "08:00", "close": "18:00"},
+      "forecast": {
+        "noiseDB": [35, 36, 36, 37, 38, 39, 39, 40, 60, 62, 52, 56, 66, 66, 58, 54, 52, 55, 45, 35, 35, 35, 35, 35],
+        "sudden": [0.05, 0.06, 0.06, 0.07, 0.08, 0.09, 0.09, 0.1, 0.5, 0.45, 0.3, 0.35, 0.5, 0.5, 0.4, 0.3, 0.3, 0.3, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05],
+        "light": [0, 0.01, 0.03, 0.04, 0.06, 0.07, 0.09, 0.1, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.2, 0, 0, 0, 0, 0],
+        "crowd": [0, 0.01, 0.01, 0.02, 0.03, 0.04, 0.04, 0.05, 0.45, 0.5, 0.3, 0.4, 0.65, 0.65, 0.45, 0.3, 0.3, 0.35, 0.1, 0, 0, 0, 0, 0],
+        "smell": [0.05, 0.07, 0.09, 0.11, 0.14, 0.16, 0.18, 0.2, 0.35, 0.35, 0.35, 0.35, 0.45, 0.45, 0.35, 0.35, 0.35, 0.35, 0.2, 0.05, 0.05, 0.05, 0.05, 0.05]
+      },
+      "triggers": [
+        {"tag": "coffeeGrinder", "label": "Coffee grinder by the counter"},
+        {"tag": "music", "label": "Music at lunchtime"},
+        {"tag": "foodSmells", "label": "Toasties and coffee"}
+      ],
+      "goodToKnow": [
+        {"kind": "seating", "text": "Quieter tables at the back, away from the counter"},
+        {"kind": "lighting", "text": "Big windows, lots of daylight"},
+        {"kind": "stepFree", "text": "Step-free entrance"}
+      ],
+      "busyPeriods": [
+        {"start": "08:00", "end": "09:30", "label": "the morning coffee run"},
+        {"start": "11:30", "end": "14:30", "label": "the lunch rush"}
+      ],
+      "notes": {"smell": "Fresh coffee"}
+    },
+    {
+      "id": "pebble-coffee",
+      "name": "Pebble Coffee",
+      "category": "cafe",
+      "street": "Tide Lane",
+      "offset": {"east": -40, "north": -330},
+      "hours": {"open": "07:00", "close": "17:00"},
+      "forecast": {
+        "noiseDB": [35, 36, 36, 36, 37, 38, 38, 58, 68, 65, 55, 54, 60, 58, 50, 48, 47, 42, 35, 35, 35, 35, 35, 35],
+        "sudden": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.4, 0.55, 0.5, 0.35, 0.3, 0.4, 0.35, 0.25, 0.2, 0.2, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
+        "light": [0, 0.02, 0.03, 0.05, 0.07, 0.08, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0, 0, 0, 0, 0, 0],
+        "crowd": [0, 0.02, 0.03, 0.05, 0.07, 0.08, 0.1, 0.6, 0.8, 0.7, 0.4, 0.35, 0.5, 0.45, 0.3, 0.25, 0.25, 0.1, 0, 0, 0, 0, 0, 0],
+        "smell": [0.05, 0.06, 0.07, 0.08, 0.08, 0.09, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.2, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
+      },
+      "triggers": [
+        {"tag": "coffeeGrinder"},
+        {"tag": "music", "label": "Upbeat music in the mornings"}
+      ],
+      "goodToKnow": [
+        {"kind": "seating", "text": "Window bar with single stools"},
+        {"kind": "outdoors", "text": "Two tables outside"}
+      ],
+      "busyPeriods": [
+        {"start": "07:00", "end": "10:00", "label": "the commuter rush"},
+        {"start": "12:00", "end": "13:30", "label": "the lunch queue"}
+      ]
+    },
+    {
+      "id": "harbour-tea-room",
+      "name": "Harbour Tea Room",
+      "category": "cafe",
+      "street": "Harbour St",
+      "offset": {"east": 380, "north": 90},
+      "hours": {"open": "09:00", "close": "17:00"},
+      "forecast": {
+        "noiseDB": [34, 34, 34, 35, 35, 35, 36, 36, 36, 42, 44, 48, 56, 54, 46, 54, 52, 42, 34, 34, 34, 34, 34, 34],
+        "sudden": [0.05, 0.06, 0.06, 0.07, 0.07, 0.08, 0.08, 0.09, 0.09, 0.1, 0.1, 0.1, 0.2, 0.2, 0.1, 0.15, 0.15, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
+        "light": [0, 0.01, 0.01, 0.02, 0.03, 0.03, 0.04, 0.04, 0.05, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1, 0, 0, 0, 0, 0, 0],
+        "crowd": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.15, 0.2, 0.3, 0.5, 0.45, 0.25, 0.45, 0.4, 0.1, 0, 0, 0, 0, 0, 0],
+        "smell": [0.05, 0.06, 0.06, 0.07, 0.08, 0.08, 0.09, 0.09, 0.1, 0.25, 0.28, 0.32, 0.35, 0.3, 0.32, 0.35, 0.3, 0.15, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
+      },
+      "triggers": [
+        {"tag": "music", "label": "Soft piano music"},
+        {"tag": "foodSmells", "label": "Baking smells in the afternoon"}
+      ],
+      "goodToKnow": [
+        {"kind": "lighting", "text": "Warm lamps, no strip lights"},
+        {"kind": "seating", "text": "Booths with high backs"},
+        {"kind": "toilets", "text": "Accessible toilet on the ground floor"}
+      ],
+      "busyPeriods": [
+        {"start": "12:00", "end": "13:30", "label": "the lunch crowd"},
+        {"start": "15:00", "end": "16:30", "label": "afternoon tea"}
+      ],
+      "notes": {"light": "Warm lamps, no strip lights"}
+    },
+    {
+      "id": "larkspur-gardens",
+      "name": "Larkspur Gardens",
+      "category": "park",
+      "street": "Larkspur Walk",
+      "offset": {"east": 165, "north": -15},
+      "hours": {"open": "07:00", "close": "21:00"},
+      "forecast": {
+        "noiseDB": [40, 40, 41, 41, 41, 41, 42, 42, 46, 44, 45, 46, 47, 47, 48, 48, 47, 60, 58, 50, 47, 44, 42, 40],
+        "sudden": [0.05, 0.06, 0.06, 0.07, 0.08, 0.09, 0.09, 0.1, 0.15, 0.16, 0.16, 0.17, 0.18, 0.19, 0.19, 0.2, 0.2, 0.45, 0.45, 0.25, 0.17, 0.1, 0.08, 0.05],
+        "light": [0, 0.01, 0.02, 0.03, 0.03, 0.04, 0.05, 0.1, 0.14, 0.18, 0.22, 0.26, 0.3, 0.3, 0.3, 0.27, 0.23, 0.2, 0.15, 0.1, 0.05, 0, 0, 0],
+        "crowd": [0, 0.01, 0.02, 0.03, 0.03, 0.04, 0.05, 0.1, 0.2, 0.23, 0.25, 0.28, 0.3, 0.3, 0.28, 0.25, 0.25, 0.5, 0.45, 0.3, 0.17, 0.05, 0.03, 0],
+        "smell": [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+      },
+      "triggers": [
+        {"tag": "dogs", "label": "Dogs off the lead near the pond"},
+        {"tag": "children", "label": "Playground by the north gate"}
+      ],
+      "goodToKnow": [
+        {"kind": "seating", "text": "Shaded benches by the pond"},
+        {"kind": "stepFree", "text": "Step-free paths throughout"},
+        {"kind": "toilets", "text": "Toilets by the main gate"}
+      ],
+      "busyPeriods": [
+        {"start": "17:00", "end": "18:30", "label": "the after-work joggers and dog walkers"}
+      ],
+      "notes": {"light": "Open sky, shade under the trees", "smell": "Cut grass and fresh air"}
+    },
+    {
+      "id": "northgate-market",
+      "name": "Northgate Market",
+      "category": "market",
+      "street": "Market Lane",
+      "offset": {"east": -180, "north": 40},
+      "hours": {"open": "08:00", "close": "18:00"},
+      "forecast": {
+        "noiseDB": [40, 41, 41, 42, 43, 44, 44, 45, 62, 68, 72, 75, 78, 76, 73, 72, 72, 68, 58, 45, 44, 42, 41, 40],
+        "sudden": [0.05, 0.07, 0.09, 0.11, 0.14, 0.16, 0.18, 0.2, 0.5, 0.53, 0.57, 0.6, 0.6, 0.6, 0.58, 0.57, 0.55, 0.5, 0.3, 0.1, 0.09, 0.08, 0.06, 0.05],
+        "light": [0, 0.03, 0.06, 0.09, 0.11, 0.14, 0.17, 0.2, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.3, 0.1, 0, 0, 0, 0],
+        "crowd": [0, 0.01, 0.03, 0.04, 0.06, 0.07, 0.09, 0.1, 0.45, 0.6, 0.75, 0.85, 0.9, 0.9, 0.8, 0.75, 0.75, 0.6, 0.3, 0.05, 0, 0, 0, 0],
+        "smell": [0.1, 0.13, 0.16, 0.19, 0.21, 0.24, 0.27, 0.3, 0.5, 0.57, 0.65, 0.73, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.4, 0.2, 0.1, 0.1, 0.1, 0.1]
+      },
+      "triggers": [
+        {"tag": "crowding", "label": "Tight aisles between stalls"},
+        {"tag": "foodSmells", "label": "Street food smells"},
+        {"tag": "music", "label": "Buskers by the entrance"},
+        {"tag": "chatter", "label": "Stallholders calling out"}
+      ],
+      "goodToKnow": [
+        {"kind": "info", "text": "Quieter just after it opens at 8am"},
+        {"kind": "stepFree", "text": "Step-free, but the aisles are narrow"},
+        {"kind": "seating", "text": "Seating area by the east gate"}
+      ],
+      "busyPeriods": [
+        {"start": "10:00", "end": "17:00", "label": "the market crowds"}
+      ],
+      "notes": {"smell": "Street food and spices"}
+    },
+    {
+      "id": "kingsway-station",
+      "name": "Kingsway Station",
+      "category": "station",
+      "street": "Kingsway",
+      "offset": {"east": -150, "north": -140},
+      "hours": {"open": "05:00", "close": "24:00"},
+      "forecast": {
+        "noiseDB": [50, 50, 49, 48, 48, 55, 62, 72, 76, 70, 64, 64, 64, 64, 63, 66, 68, 74, 74, 68, 62, 58, 56, 54],
+        "sudden": [0.3, 0.31, 0.32, 0.33, 0.34, 0.35, 0.5, 0.65, 0.7, 0.6, 0.45, 0.45, 0.45, 0.45, 0.45, 0.5, 0.55, 0.7, 0.7, 0.55, 0.4, 0.35, 0.32, 0.3],
+        "light": [0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35],
+        "crowd": [0.15, 0.12, 0.1, 0.07, 0.05, 0.15, 0.4, 0.8, 0.95, 0.75, 0.45, 0.47, 0.5, 0.47, 0.45, 0.5, 0.65, 0.9, 0.9, 0.65, 0.4, 0.3, 0.25, 0.2],
+        "smell": [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
+      },
+      "triggers": [
+        {"tag": "announcements", "label": "Loud platform announcements"},
+        {"tag": "trains", "label": "Squealing brakes on platform 2"},
+        {"tag": "crowding", "label": "Rush-hour crowds at the barriers"},
+        {"tag": "stripLights", "label": "Bright strip lights in the ticket hall"}
+      ],
+      "goodToKnow": [
+        {"kind": "staff", "text": "Ask staff for help. They know the Sunflower lanyard."},
+        {"kind": "quietSpace", "text": "Quieter waiting room by platform 1"},
+        {"kind": "stepFree", "text": "Step-free access to all platforms"}
+      ],
+      "busyPeriods": [
+        {"start": "07:00", "end": "09:30", "label": "the morning rush hour"},
+        {"start": "16:30", "end": "19:00", "label": "the evening rush hour"}
+      ],
+      "notes": {"light": "Bright strip lights in the ticket hall"}
+    },
+    {
+      "id": "tidewell-books",
+      "name": "Tidewell Books",
+      "category": "bookshop",
+      "street": "Brook St",
+      "offset": {"east": 260, "north": -220},
+      "hours": {"open": "10:00", "close": "18:00"},
+      "forecast": {
+        "noiseDB": [34, 34, 34, 35, 35, 35, 35, 36, 36, 36, 42, 55, 50, 48, 44, 45, 47, 46, 40, 34, 34, 34, 34, 34],
+        "sudden": [0.05, 0.06, 0.06, 0.07, 0.07, 0.08, 0.08, 0.09, 0.09, 0.1, 0.1, 0.3, 0.15, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05],
+        "light": [0, 0.01, 0.02, 0.03, 0.04, 0.06, 0.07, 0.08, 0.09, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.15, 0, 0, 0, 0, 0],
+        "crowd": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.15, 0.45, 0.35, 0.3, 0.2, 0.25, 0.3, 0.25, 0.1, 0, 0, 0, 0, 0],
+        "smell": [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+      },
+      "triggers": [
+        {"tag": "children", "label": "Story time at 11am"},
+        {"tag": "music", "label": "Quiet music near the till"}
+      ],
+      "goodToKnow": [
+        {"kind": "seating", "text": "Armchairs in the poetry corner"},
+        {"kind": "staff", "text": "Staff are happy to let you browse quietly"},
+        {"kind": "stepFree", "text": "Step-free ground floor"}
+      ],
+      "busyPeriods": [
+        {"start": "10:45", "end": "11:45", "label": "children's story time"}
+      ],
+      "quietHour": {"days": "Tuesdays", "start": "10:00", "end": "11:00"},
+      "notes": {"smell": "Paper and old books"}
+    },
+    {
+      "id": "brook-house-quiet-room",
+      "name": "Brook House Quiet Room",
+      "category": "quietRoom",
+      "street": "Saltmarsh Rd",
+      "offset": {"east": -320, "north": -260},
+      "hours": {"open": "09:00", "close": "20:00"},
+      "forecast": {
+        "noiseDB": [34, 34, 35, 35, 36, 36, 37, 37, 38, 38, 39, 41, 42, 41, 40, 41, 41, 42, 41, 39, 38, 38, 38, 38],
+        "sudden": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
+        "light": [0, 0.01, 0.01, 0.02, 0.03, 0.03, 0.04, 0.04, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0, 0, 0],
+        "crowd": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.05, 0.1, 0.15, 0.2, 0.2, 0.15, 0.1, 0.15, 0.2, 0.15, 0.1, 0.05, 0, 0, 0],
+        "smell": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.12, 0.05, 0.05, 0.05, 0.05]
+      },
+      "triggers": [
+        {"tag": "cleaningProducts", "label": "Cleaned at 6pm, faint cleaning smell"}
+      ],
+      "goodToKnow": [
+        {"kind": "lighting", "text": "Dimmable lights and soft seating"},
+        {"kind": "kit", "text": "Ear defenders and weighted blankets to borrow"},
+        {"kind": "info", "text": "No booking needed. Free to use."},
+        {"kind": "stepFree", "text": "Step-free, with a lift"}
+      ],
+      "busyPeriods": [],
+      "notes": {"light": "Dimmable, warm lights", "noise": "Soundproofed room"}
+    }
+  ]
+}
