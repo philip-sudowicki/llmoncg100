@@ -25,6 +25,10 @@ struct NearbySheet: View {
         .presentationBackground(Color.surface)
         .presentationDragIndicator(.visible)
         .interactiveDismissDisabled()
+        // The map is already presenting this sheet, so everything else is presented from here.
+        .fullScreenCover(isPresented: $mapModel.isShowingProfile) {
+            ProfileView(mode: .edit)
+        }
     }
 }
 

@@ -34,10 +34,14 @@ final class PlaceStore {
         }
     }
 
-    /// Keeps `now` fresh so statuses update while the app is open.
+    /// Keeps `now` fresh so statuses update while the app is open. Only publishes when the
+    /// minute changes, so the map isn't redrawn needlessly.
     func runClock() async {
         while !Task.isCancelled {
-            now = clock.now()
+            let latest = clock.now()
+            if DemoClock.minuteOfDay(latest) != minuteOfDay {
+                now = latest
+            }
             do {
                 try await Task.sleep(for: .seconds(20))
             } catch {

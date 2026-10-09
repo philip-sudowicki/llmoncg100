@@ -69,6 +69,15 @@ final class TideTextTests: XCTestCase {
         XCTAssertEqual(TideText.checkIn(.calm, at: earlier, today: today, calendar: calendar), "You checked in: Calm · 2:14pm")
     }
 
+    func testLowWaterText() {
+        XCTAssertEqual(TideText.calmPlaceAway(minutes: 1), "A calm place is a minute away.")
+        XCTAssertEqual(TideText.calmPlaceAway(minutes: 2), "A calm place is two minutes away.")
+        XCTAssertEqual(TideText.calmPlaceAway(minutes: 14), "A calm place is 14 minutes away.")
+        XCTAssertEqual(TideText.lowWaterStatus(.calmUntil(hour(16, 55)), now: hour(14)), "Calm now · quiet until 5pm")
+        XCTAssertEqual(TideText.distance(metres: 163), "160 m")
+        XCTAssertEqual(TideText.distance(metres: 1_240), "1.2 km")
+    }
+
     func testMetreOffsetsBecomeCoordinates() {
         let centre = GeoPoint.centralLondon
         let north = centre.offset(by: MetreOffset(east: 0, north: 111.32))

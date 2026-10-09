@@ -205,6 +205,37 @@ enum TideText {
         return "You checked in: \(feeling.title) · \(weekday) \(time)"
     }
 
+    // MARK: Find low water
+
+    /// "A calm place is two minutes away."
+    static func calmPlaceAway(minutes: Int) -> String {
+        let words = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+        if minutes <= 1 { return "A calm place is a minute away." }
+        let number = minutes <= words.count ? words[minutes - 1] : String(minutes)
+        return "A calm place is \(number) minutes away."
+    }
+
+    /// "Calm now · quiet until 5pm".
+    static func lowWaterStatus(_ change: TideChange, now: Int) -> String {
+        switch change {
+        case .calmUntil(let minute):
+            "Calm now · quiet until \(clock(displayMinute(minute, now: now)))"
+        case .calmUntilClosing(let closes):
+            "Calm now · quiet until it closes at \(clock(closes))"
+        default:
+            "Calm now"
+        }
+    }
+
+    /// Distances for walking, rounded to 10 m, for example "160 m" or "1.2 km".
+    static func distance(metres: Double) -> String {
+        if metres >= 1_000 {
+            let km = (metres / 100).rounded() / 10
+            return "\(km) km"
+        }
+        return "\(Int((metres / 10).rounded()) * 10) m"
+    }
+
     static func lowercasedFirst(_ text: String) -> String {
         guard let first = text.first else { return text }
         return first.lowercased() + text.dropFirst()
