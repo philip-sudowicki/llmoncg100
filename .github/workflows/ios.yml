@@ -1,0 +1,66 @@
+name: iOS build
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          xcrun simctl list runtimes available
+
+      - name: Pick an available iPhone simulator
+        id: sim
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available --json | python3 -c '
+          import json, sys
+          data = json.load(sys.stdin)["devices"]
+          runtimes = sorted((r for r in data if "iOS" in r), key=lambda r: [int(p) for p in r.split("iOS-")[-1].split("-")], reverse=True)
+          for runtime in runtimes:
+              for device in data[runtime]:
+                  if device["name"].startswith("iPhone") and device["isAvailable"]:
+                      print(device["udid"]); sys.exit(0)
+          sys.exit("No available iPhone simulator")
+          ')
+          echo "Using simulator $DEVICE_ID"
+          xcrun simctl list devices available | grep "$DEVICE_ID"
+          echo "id=$DEVICE_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Build and test
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Lowtide.xcodeproj \
+            -scheme Lowtide \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.id }}" \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee xcodebuild.log
+
+      - name: Fail on compiler warnings
+        if: always()
+        run: |
+          # Warnings from our own sources and asset catalog. Xcode's AppIntents metadata note is not ours.
+          grep -E "(warning|error): " xcodebuild.log \
+            | grep -v "appintentsmetadataprocessor" \
+            | grep -v "Metadata extraction skipped" \
+            | sort -u > issues.txt || true
+          cat issues.txt
+          if [ -s issues.txt ]; then
+            echo "::error::Build produced $(wc -l < issues.txt | tr -d ' ') warning or error lines"
+            exit 1
+          fi
+          echo "No warnings."
