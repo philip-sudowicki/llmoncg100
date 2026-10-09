@@ -52,7 +52,36 @@ extension ButtonStyle where Self == OutlinedButtonStyle {
     static var outlined: OutlinedButtonStyle { OutlinedButtonStyle() }
 }
 
-/// One of the four equal buttons on the place page: an icon above a short label.
+/// The look of the four equal buttons on the place page: an icon above a short label.
+/// Shared by `ActionTile` and `ShareLink`, which can't be a plain `Button`.
+struct ActionTileLabel: View {
+    let title: String
+    let systemImage: String
+    var isProminent = false
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Image(systemName: systemImage)
+                .font(.title3)
+                .accessibilityHidden(true)
+            Text(title)
+                .font(.footnote.weight(.semibold))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 64)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 4)
+        .foregroundStyle(isProminent ? Color.onCalmDeep : Color.calmDeep)
+        .background(
+            isProminent ? Color.calmDeep : Color.calmTint,
+            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+}
+
+/// One of the four equal buttons on the place page.
 struct ActionTile: View {
     let title: String
     let systemImage: String
@@ -62,24 +91,7 @@ struct ActionTile: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 6) {
-                Image(systemName: systemImage)
-                    .font(.title3)
-                    .accessibilityHidden(true)
-                Text(title)
-                    .font(.footnote.weight(.semibold))
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .frame(maxWidth: .infinity, minHeight: 64)
-            .padding(.vertical, 8)
-            .padding(.horizontal, 4)
-            .foregroundStyle(isProminent ? Color.onCalmDeep : Color.calmDeep)
-            .background(
-                isProminent ? Color.calmDeep : Color.calmTint,
-                in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-            )
-            .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            ActionTileLabel(title: title, systemImage: systemImage, isProminent: isProminent)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isOn ? .isSelected : [])

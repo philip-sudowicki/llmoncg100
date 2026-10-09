@@ -40,6 +40,35 @@ final class TideTextTests: XCTestCase {
         XCTAssertEqual(TideText.walk(minutes: 3), "3 min walk")
     }
 
+    func testHowItFeelsDescriptions() throws {
+        let quiet = try TestPlaces.place(noiseDB: TestPlaces.series(45), crowd: TestPlaces.series(0.3))
+        XCTAssertEqual(TideText.feeling(.noise, at: quiet, minute: hour(14)), "Quiet · about 45 dB")
+        XCTAssertEqual(TideText.feeling(.crowd, at: quiet, minute: hour(14)), "A few people, plenty of space")
+        XCTAssertEqual(TideText.feeling(.smell, at: quiet, minute: hour(14)), "Nothing noticed")
+
+        let base = try TestPlaces.place()
+        let noted = Place(
+            id: "noted", name: "Noted", category: .library, street: "Test St",
+            offset: MetreOffset(east: 0, north: 0), hours: base.hours, forecast: base.forecast,
+            notes: FactorNotes(light: "Soft daylight, strip lights at the back")
+        )
+        XCTAssertEqual(TideText.feeling(.light, at: noted, minute: hour(14)), "Soft daylight, strip lights at the back")
+    }
+
+    func testMeterLevels() {
+        XCTAssertEqual(TideText.meterLevel(0), 1)
+        XCTAssertEqual(TideText.meterLevel(0.5), 3)
+        XCTAssertEqual(TideText.meterLevel(1), 5)
+    }
+
+    func testCheckInLine() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try XCTUnwrap(TimeZone(identifier: "Europe/London"))
+        let today = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 10, day: 9, hour: 15)))
+        let earlier = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 10, day: 9, hour: 14, minute: 14)))
+        XCTAssertEqual(TideText.checkIn(.calm, at: earlier, today: today, calendar: calendar), "You checked in: Calm · 2:14pm")
+    }
+
     func testMetreOffsetsBecomeCoordinates() {
         let centre = GeoPoint.centralLondon
         let north = centre.offset(by: MetreOffset(east: 0, north: 111.32))

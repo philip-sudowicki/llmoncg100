@@ -89,6 +89,10 @@ enum Persistence {
     /// The on-device store. Falls back to memory if the store can't open, so the app still launches.
     @MainActor
     static func makeContainer(inMemory: Bool = false) -> ModelContainer {
+        if !inMemory {
+            // SwiftData expects this folder to exist; creating it up front avoids recovery noise on first launch.
+            try? FileManager.default.createDirectory(at: URL.applicationSupportDirectory, withIntermediateDirectories: true)
+        }
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
         if let container = try? ModelContainer(for: schema, configurations: [configuration]) {
             return container

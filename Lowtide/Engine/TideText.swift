@@ -158,6 +158,53 @@ enum TideText {
         return "Quiet hour\(days), \(range(from: quietHour.start, to: quietHour.end))"
     }
 
+    // MARK: How it feels
+
+    /// A 1 to 5 meter level for a normalised value.
+    static func meterLevel(_ value: Double) -> Int {
+        min(max(1 + Int((value * 4).rounded()), 1), 5)
+    }
+
+    /// Plain-English description of a factor at a place, for example "Quiet · about 45 dB".
+    /// Place-specific notes replace the generic wording for light, crowds and smells.
+    static func feeling(_ factor: Factor, at place: Place, minute: Int) -> String {
+        let levels = place.forecast.levels(at: Double(minute))
+        switch factor {
+        case .noise:
+            let decibels = place.forecast.decibels(at: Double(minute))
+            let word = place.notes.noise ?? SoundLevel.noiseWord(decibels)
+            return "\(word) · about \(SoundLevel.roundedForDisplay(decibels)) dB"
+        case .sudden:
+            return describe(levels.sudden, ["Hardly any sudden sounds", "The odd sudden sound", "Some sudden sounds", "Frequent sudden sounds"])
+        case .light:
+            return place.notes.light ?? describe(levels.light, ["Soft, even light", "Mostly soft light", "Bright in places", "Harsh or flickering light"])
+        case .crowd:
+            return place.notes.crowd ?? describe(levels.crowd, ["Nearly empty", "A few people, plenty of space", "Fairly busy", "Packed"])
+        case .smell:
+            return place.notes.smell ?? describe(levels.smell, ["Nothing noticed", "Faint smells", "Noticeable smells", "Strong smells"])
+        }
+    }
+
+    /// Picks one of four phrases for a value from 0 to 1.
+    private static func describe(_ value: Double, _ phrases: [String]) -> String {
+        switch value {
+        case ..<0.2: phrases[0]
+        case ..<0.45: phrases[1]
+        case ..<0.7: phrases[2]
+        default: phrases[3]
+        }
+    }
+
+    /// "You checked in: Calm · 2:14pm", with the weekday when it wasn't today.
+    static func checkIn(_ feeling: CheckInFeeling, at date: Date, today: Date, calendar: Calendar = .current) -> String {
+        let time = clock(DemoClock.minuteOfDay(date, calendar: calendar))
+        if calendar.isDate(date, inSameDayAs: today) {
+            return "You checked in: \(feeling.title) · \(time)"
+        }
+        let weekday = calendar.shortWeekdaySymbols[calendar.component(.weekday, from: date) - 1]
+        return "You checked in: \(feeling.title) · \(weekday) \(time)"
+    }
+
     static func lowercasedFirst(_ text: String) -> String {
         guard let first = text.first else { return text }
         return first.lowercased() + text.dropFirst()

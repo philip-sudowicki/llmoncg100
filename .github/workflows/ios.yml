@@ -53,14 +53,13 @@ jobs:
       - name: Fail on compiler warnings
         if: always()
         run: |
-          # Warnings from our own sources and asset catalog. Xcode's AppIntents metadata note is not ours.
-          grep -E "(warning|error): " xcodebuild.log \
-            | grep -v "appintentsmetadataprocessor" \
+          # Compiler, linker and asset catalog diagnostics only (not runtime logs from the test host).
+          grep -E '^(/[^ ]*:[0-9]+(:[0-9]+)?: (warning|error): |/[^ ]*: (warning|error): |ld: warning: |warning: |error: )' xcodebuild.log \
             | grep -v "Metadata extraction skipped" \
             | sort -u > issues.txt || true
           cat issues.txt
           if [ -s issues.txt ]; then
-            echo "::error::Build produced $(wc -l < issues.txt | tr -d ' ') warning or error lines"
+            echo "::error::Build produced $(wc -l < issues.txt | tr -d ' ') warnings or errors"
             exit 1
           fi
           echo "No warnings."
