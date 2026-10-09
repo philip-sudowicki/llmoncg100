@@ -7,7 +7,7 @@ struct BreathingCircle: View {
     static let cycle: TimeInterval = 10
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .headline) private var size: CGFloat = 200
+    @ScaledMetric(relativeTo: .headline) private var size: CGFloat = 176
 
     var body: some View {
         let diameter = min(size, 300)

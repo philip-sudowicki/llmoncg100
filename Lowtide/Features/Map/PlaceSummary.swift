@@ -13,7 +13,8 @@ struct PlaceSummary: Identifiable {
 
     var id: String { place.id }
     var walkMinutes: Int { Walking.estimatedMinutes(straightLineMetres: distance) }
-    var walkText: String { "\(walkMinutes) min walk" }
+    /// "3 min walk", kept together on one line.
+    var walkText: String { "\(walkMinutes)\u{00A0}min\u{00A0}walk" }
 
     /// Summaries sorted by distance from `origin`.
     static func make(

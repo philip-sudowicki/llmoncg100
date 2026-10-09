@@ -145,39 +145,31 @@ private struct PlaceDetailContent: View {
 
     private var actions: some View {
         VStack(alignment: .leading, spacing: 10) {
-            let layout = dynamicTypeSize.isAccessibilitySize
-                ? AnyLayout(VStackLayout(spacing: 8))
-                : AnyLayout(HStackLayout(spacing: 8))
-            layout {
-                Button {
-                    toggleRoute()
-                } label: {
-                    ActionLabel(
-                        title: hasRoute ? "Hide route" : (model.isFindingRoute ? "Finding…" : "Directions"),
-                        systemImage: "arrow.triangle.turn.up.right.diamond"
-                    )
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: 8) {
+                    directionsButton
+                    alertButton
+                    saveButton
+                    shareButton
                 }
-                .buttonStyle(ActionButtonStyle(isProminent: true))
-                .disabled(model.isFindingRoute || position == nil)
-                .accessibilityHint("Draws a walking route on the map")
-
-                Button {
-                    alertTapped()
-                } label: {
-                    ActionLabel(title: alertMinute == nil ? "Alert me" : "Alert set", systemImage: alertMinute == nil ? "bell" : "bell.fill")
+            } else if dynamicTypeSize >= .xLarge {
+                Grid(horizontalSpacing: 8, verticalSpacing: 8) {
+                    GridRow {
+                        directionsButton
+                        alertButton
+                    }
+                    GridRow {
+                        saveButton
+                        shareButton
+                    }
                 }
-                .buttonStyle(ActionButtonStyle())
-                .accessibilityHint(alertMinute == nil ? "Sends a quiet notification when it's calm" : "Cancels the alert")
-
-                Button {
-                    toggleSaved()
-                } label: {
-                    ActionLabel(title: isSaved ? "Saved" : "Save", systemImage: isSaved ? "bookmark.fill" : "bookmark")
+            } else {
+                HStack(spacing: 8) {
+                    directionsButton
+                    alertButton
+                    saveButton
+                    shareButton
                 }
-                .buttonStyle(ActionButtonStyle())
-                .accessibilityAddTraits(isSaved ? .isSelected : [])
-
-                shareButton
             }
 
             if let alertMinute {
@@ -191,6 +183,40 @@ private struct PlaceDetailContent: View {
                     .foregroundStyle(Color.inkSecondary)
             }
         }
+    }
+
+    private var directionsButton: some View {
+        Button {
+            toggleRoute()
+        } label: {
+            ActionLabel(
+                title: hasRoute ? "Hide route" : (model.isFindingRoute ? "Finding…" : "Directions"),
+                systemImage: "arrow.triangle.turn.up.right.diamond"
+            )
+        }
+        .buttonStyle(ActionButtonStyle(isProminent: true))
+        .disabled(model.isFindingRoute || position == nil)
+        .accessibilityHint("Draws a walking route on the map")
+    }
+
+    private var alertButton: some View {
+        Button {
+            alertTapped()
+        } label: {
+            ActionLabel(title: alertMinute == nil ? "Alert me" : "Alert set", systemImage: alertMinute == nil ? "bell" : "bell.fill")
+        }
+        .buttonStyle(ActionButtonStyle())
+        .accessibilityHint(alertMinute == nil ? "Sends a quiet notification when it's calm" : "Cancels the alert")
+    }
+
+    private var saveButton: some View {
+        Button {
+            toggleSaved()
+        } label: {
+            ActionLabel(title: isSaved ? "Saved" : "Save", systemImage: isSaved ? "bookmark.fill" : "bookmark")
+        }
+        .buttonStyle(ActionButtonStyle())
+        .accessibilityAddTraits(isSaved ? .isSelected : [])
     }
 
     @ViewBuilder

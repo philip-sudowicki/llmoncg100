@@ -38,10 +38,11 @@ final class MapModel {
         detent = Self.peekDetent
     }
 
-    /// Frames the demo centre, nudged so places sit above the sheet.
+    /// Frames the demo centre at walking scale (about 400 m across), nudged up so nearby places
+    /// sit between the search bar and the sheet.
     func focus(on anchor: GeoPoint) {
-        let centre = anchor.offsetBy(east: 0, north: -230)
-        camera = .region(MKCoordinateRegion(center: centre.coordinate, latitudinalMeters: 1500, longitudinalMeters: 1500))
+        let centre = anchor.offsetBy(east: 0, north: -30)
+        camera = .region(MKCoordinateRegion(center: centre.coordinate, latitudinalMeters: 870, longitudinalMeters: 400))
     }
 
     func showRoute(_ route: WalkingRoute, to placeID: String) {

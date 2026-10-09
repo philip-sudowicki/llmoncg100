@@ -17,7 +17,7 @@ struct LowWaterView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: 20) {
                 topBar
                 BreathingCircle()
                 VStack(spacing: 6) {
@@ -221,7 +221,7 @@ private struct LowWaterCard: View {
             }
 
             RoutePreviewMap(route: result.route, origin: origin, destination: result.destination)
-                .frame(height: 130)
+                .frame(height: 110)
                 .clipShape(RoundedRectangle(cornerRadius: Metrics.buttonRadius, style: .continuous))
 
             if let step = result.route?.firstInstruction {
@@ -237,8 +237,8 @@ private struct LowWaterCard: View {
                         Text(step.instruction)
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Color.lowWaterText)
-                        if let next = result.route?.followingStep, next.distance > 0 {
-                            Text("then \(Walking.distanceText(metres: next.distance))")
+                        if step.distance > 0 {
+                            Text("then walk \(Walking.distanceText(metres: step.distance))")
                                 .font(.footnote)
                                 .foregroundStyle(Color.lowWaterTextSecondary)
                         }

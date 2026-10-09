@@ -7,7 +7,7 @@
       "name": "Marlow Street Library",
       "category": "library",
       "street": "Weaver St",
-      "offset": {"east": -70, "north": 120},
+      "offset": {"east": -90, "north": 130},
       "hours": {"open": "09:00", "close": "19:00"},
       "forecast": {
         "noiseDB": [35, 35, 35, 35, 36, 36, 36, 36, 36, 40, 42, 50, 55, 52, 43, 47, 58, 55, 45, 38, 37, 36, 36, 35],
@@ -38,7 +38,7 @@
       "name": "Holloway Reading Rooms",
       "category": "library",
       "street": "Mill Lane",
-      "offset": {"east": 420, "north": 380},
+      "offset": {"east": 380, "north": 420},
       "hours": {"open": "10:00", "close": "17:00"},
       "forecast": {
         "noiseDB": [34, 34, 35, 35, 36, 36, 36, 37, 37, 38, 38, 42, 45, 46, 41, 40, 40, 36, 36, 36, 36, 36, 36, 36],
@@ -63,7 +63,7 @@
       "name": "Fern & Finch",
       "category": "cafe",
       "street": "Canal Row",
-      "offset": {"east": 130, "north": 230},
+      "offset": {"east": 110, "north": 150},
       "hours": {"open": "08:00", "close": "18:00"},
       "forecast": {
         "noiseDB": [35, 36, 36, 37, 38, 39, 39, 40, 60, 62, 52, 56, 66, 66, 58, 54, 52, 55, 45, 35, 35, 35, 35, 35],
@@ -93,7 +93,7 @@
       "name": "Pebble Coffee",
       "category": "cafe",
       "street": "Tide Lane",
-      "offset": {"east": -40, "north": -330},
+      "offset": {"east": -30, "north": -260},
       "hours": {"open": "07:00", "close": "17:00"},
       "forecast": {
         "noiseDB": [35, 36, 36, 36, 37, 38, 38, 58, 68, 65, 55, 54, 60, 58, 50, 48, 47, 42, 35, 35, 35, 35, 35, 35],
@@ -120,7 +120,7 @@
       "name": "Harbour Tea Room",
       "category": "cafe",
       "street": "Harbour St",
-      "offset": {"east": 380, "north": 90},
+      "offset": {"east": 300, "north": -120},
       "hours": {"open": "09:00", "close": "17:00"},
       "forecast": {
         "noiseDB": [34, 34, 34, 35, 35, 35, 36, 36, 36, 42, 44, 48, 56, 54, 46, 54, 52, 42, 34, 34, 34, 34, 34, 34],
@@ -149,7 +149,7 @@
       "name": "Larkspur Gardens",
       "category": "park",
       "street": "Larkspur Walk",
-      "offset": {"east": 165, "north": -15},
+      "offset": {"east": 105, "north": 5},
       "hours": {"open": "07:00", "close": "21:00"},
       "forecast": {
         "noiseDB": [40, 40, 41, 41, 41, 41, 42, 42, 46, 44, 45, 46, 47, 47, 48, 48, 47, 60, 58, 50, 47, 44, 42, 40],
@@ -177,7 +177,7 @@
       "name": "Northgate Market",
       "category": "market",
       "street": "Market Lane",
-      "offset": {"east": -180, "north": 40},
+      "offset": {"east": -110, "north": 60},
       "hours": {"open": "08:00", "close": "18:00"},
       "forecast": {
         "noiseDB": [40, 41, 41, 42, 43, 44, 44, 45, 62, 68, 72, 75, 78, 76, 73, 72, 72, 68, 58, 45, 44, 42, 41, 40],
@@ -207,7 +207,7 @@
       "name": "Kingsway Station",
       "category": "station",
       "street": "Kingsway",
-      "offset": {"east": -150, "north": -140},
+      "offset": {"east": -95, "north": -75},
       "hours": {"open": "05:00", "close": "24:00"},
       "forecast": {
         "noiseDB": [50, 50, 49, 48, 48, 55, 62, 72, 76, 70, 64, 64, 64, 64, 63, 66, 68, 74, 74, 68, 62, 58, 56, 54],
@@ -238,7 +238,7 @@
       "name": "Tidewell Books",
       "category": "bookshop",
       "street": "Brook St",
-      "offset": {"east": 260, "north": -220},
+      "offset": {"east": 60, "north": -170},
       "hours": {"open": "10:00", "close": "18:00"},
       "forecast": {
         "noiseDB": [34, 34, 34, 35, 35, 35, 35, 36, 36, 36, 42, 55, 50, 48, 44, 45, 47, 46, 40, 34, 34, 34, 34, 34],
@@ -267,7 +267,7 @@
       "name": "Brook House Quiet Room",
       "category": "quietRoom",
       "street": "Saltmarsh Rd",
-      "offset": {"east": -320, "north": -260},
+      "offset": {"east": -260, "north": -230},
       "hours": {"open": "09:00", "close": "20:00"},
       "forecast": {
         "noiseDB": [34, 34, 35, 35, 36, 36, 37, 37, 38, 38, 39, 41, 42, 41, 40, 41, 41, 42, 41, 39, 38, 38, 38, 38],

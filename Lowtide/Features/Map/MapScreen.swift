@@ -108,6 +108,12 @@ struct MapScreen: View {
         switch screen {
         case .place(let id):
             model.showPlace(id)
+        case .route(let id):
+            model.showPlace(id)
+            if let place = placeStore.place(id: id), let destination = placeStore.position(of: place),
+               let origin = location.current ?? placeStore.anchor {
+                await model.findRoute(from: origin, to: destination, placeID: id)
+            }
         case .checkIn(let id):
             model.checkInPlace = placeStore.place(id: id)
         case .lowWater, .cards:

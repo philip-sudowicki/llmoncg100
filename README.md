@@ -24,7 +24,7 @@ Pick any simulator listed by `xcrun simctl list devices available`.
 The scheme has these arguments, switched off. Turn them on under **Product › Scheme › Edit Scheme › Run › Arguments**:
 
 - `-LowtideDemoTime 14:10` fixes the time of day, so you can see the mockup's afternoon whenever you test.
-- `-LowtideDemoScreen <screen>` opens a screen with the default profile. Nothing is saved. The screens are `onboarding`, `map`, `place:<id>`, `checkin:<id>`, `lowwater`, `cards` and `profile`, for example `place:marlow-street-library`.
+- `-LowtideDemoScreen <screen>` opens a screen with the default profile. Nothing is saved. The screens are `onboarding`, `map`, `place:<id>`, `route:<id>`, `checkin:<id>`, `lowwater`, `cards` and `profile`, for example `place:marlow-street-library`.
 
 ## Where things live
 

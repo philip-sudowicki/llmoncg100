@@ -37,12 +37,13 @@ final class TideClock {
 ///
 /// - `-LowtideDemoTime 14:10` fixes the time of day.
 /// - `-LowtideDemoScreen <screen>` opens a screen with sample settings and nothing saved:
-///   `onboarding`, `map`, `place:<id>`, `checkin:<id>`, `lowwater`, `cards` or `profile`.
+///   `onboarding`, `map`, `place:<id>`, `route:<id>`, `checkin:<id>`, `lowwater`, `cards` or `profile`.
 enum DemoOptions {
     enum Screen: Equatable {
         case onboarding
         case map
         case place(String)
+        case route(String)
         case checkIn(String)
         case lowWater
         case cards
@@ -54,6 +55,7 @@ enum DemoOptions {
             case ("onboarding", _): self = .onboarding
             case ("map", _): self = .map
             case ("place", let id?): self = .place(id)
+            case ("route", let id?): self = .route(id)
             case ("checkin", let id?): self = .checkIn(id)
             case ("lowwater", _): self = .lowWater
             case ("cards", _): self = .cards

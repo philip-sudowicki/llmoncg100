@@ -154,6 +154,7 @@ private struct SensitivityRow: View {
                 ForEach(Sensitivity.allCases) { Text($0.label).tag($0) }
             }
             .pickerStyle(.segmented)
+            .controlSize(.large)
             .frame(minHeight: Metrics.minimumTapTarget)
             .frame(maxWidth: dynamicTypeSize >= .xxLarge ? .infinity : 190)
         }

@@ -36,13 +36,13 @@ jobs:
       - name: Build and test
         run: |
           mkdir -p snapshots
-          xcodebuild test \
+          # TEST_RUNNER_ variables reach the test process without the prefix.
+          TEST_RUNNER_LOWTIDE_SNAPSHOT_DIR="$PWD/snapshots" xcodebuild test \
             -project Lowtide.xcodeproj \
             -scheme Lowtide \
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -derivedDataPath DerivedData \
             CODE_SIGNING_ALLOWED=NO \
-            TEST_RUNNER_LOWTIDE_SNAPSHOT_DIR="$PWD/snapshots" \
             > build.log 2>&1
           status=$?
           grep -E "error:|warning:|✘|✔ Test run|Test Suite .* (passed|failed)|\*\* (BUILD|TEST)" build.log | sort -u | head -200

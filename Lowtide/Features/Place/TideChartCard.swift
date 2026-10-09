@@ -38,6 +38,8 @@ struct TideChartCard: View {
                     summary: narrative.chartSummary(for: place, atMinute: minute)
                 )
                 .frame(height: 170)
+                // Room for the "Now" label above the plot.
+                .padding(.top, 16)
 
                 FlowLayout(spacing: 14, lineSpacing: 6) {
                     LegendItem(title: "Tide level") {
@@ -134,6 +136,8 @@ struct TideChart: View {
                     Text("Busy for you")
                         .font(.caption2)
                         .foregroundStyle(Color.busyText)
+                        .padding(.horizontal, 4)
+                        .background(Capsule().fill(Color.surface.opacity(0.9)))
                 }
 
             if let now {

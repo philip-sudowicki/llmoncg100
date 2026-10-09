@@ -53,10 +53,10 @@ struct ActionButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.subheadline.weight(.semibold))
+            .font(.footnote.weight(.semibold))
             .multilineTextAlignment(.center)
             .foregroundStyle(isProminent ? Color.onCalmDeep : Color.calmDeep)
-            .padding(.horizontal, 6)
+            .padding(.horizontal, 4)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity, minHeight: 64)
             .background(

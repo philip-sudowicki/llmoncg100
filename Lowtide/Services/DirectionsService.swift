@@ -14,16 +14,12 @@ struct WalkingRoute: Equatable, Sendable {
 
     var minutes: Int { Walking.minutes(forTravelTime: travelTime) }
 
-    /// The first step with words in it. MapKit's first step is usually an empty "start".
+    /// The first useful instruction, such as "Turn left onto Canal Walk". MapKit's first step is
+    /// usually an empty start, or "Proceed to the route" when you begin off-road; those are skipped
+    /// when a more useful step follows.
     var firstInstruction: Step? {
-        steps.first { !$0.instruction.isEmpty }
-    }
-
-    /// The step after `firstInstruction`, for "then 120 m along the water".
-    var followingStep: Step? {
-        guard let first = firstInstruction, let index = steps.firstIndex(of: first) else { return nil }
-        let next = steps.index(after: index)
-        return next < steps.endIndex ? steps[next] : nil
+        let spoken = steps.filter { !$0.instruction.isEmpty }
+        return spoken.first { !$0.instruction.lowercased().hasPrefix("proceed to the route") } ?? spoken.first
     }
 
     var coordinates: [CLLocationCoordinate2D] {
