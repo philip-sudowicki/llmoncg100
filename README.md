@@ -68,6 +68,13 @@ Every day uses the same forecast in v1. To add or change places, edit the JSON. 
 - The sound meter computes a level from microphone samples in memory. Audio is never written to disk, kept or sent. Only the number is stored, and only when "Share sound readings" is on.
 - Location is when-in-use only, and is used to place the map and measure walking distances.
 
+## Known limitations in v1
+
+- **Sound readings are approximate.** iPhone microphones aren't calibrated sound level meters. `SoundMeter.calibrationOffset` (+100 dB) maps the microphone's dBFS to an approximate dB SPL. To tune it for a device, compare a steady sound against a reference meter.
+- **The forecast is invented sample data.** It's the same every day, and check-ins are stored but don't change the forecast yet.
+- **Places follow you.** The sample places are positioned around your first location fix each launch. If you start far from where you were last time, they move with you.
+- **Segmented controls use the system height.** The "What gets to you" pickers are standard segmented `Picker`s, so their height (about 32 pt) is set by iOS, not by the app.
+
 ## Continuous integration
 
-`.github/workflows/ios.yml` builds and tests the app on a macOS runner and fails on any compiler warning. It also saves simulator screenshots of every screen as a build artifact.
+`.github/workflows/ios.yml` runs on every push. It builds and tests the app on a macOS runner with the newest stable Xcode and fails on any compiler warning. It also saves simulator screenshots of every screen, plus rendered images of the place page sections, as the `lowtide-review` build artifact.
