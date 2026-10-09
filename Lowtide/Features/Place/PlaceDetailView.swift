@@ -475,7 +475,7 @@ struct GoodToKnowCard: View {
         if let quiet = place.quietHour {
             items.append((symbol: "clock", text: "Quiet hour on \(quiet.days), \(TimeText.range(from: quiet.start, to: quiet.end))"))
         }
-        items += place.goodToKnow.map { ($0.kind.symbol, $0.text) }
+        items += place.goodToKnow.map { (symbol: $0.kind.symbol, text: $0.text) }
         return items
     }
 

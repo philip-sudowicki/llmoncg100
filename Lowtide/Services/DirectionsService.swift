@@ -34,7 +34,7 @@ struct WalkingRoute: Equatable, Sendable {
 extension WalkingRoute {
     init(route: MKRoute) {
         let polyline = route.polyline
-        var coordinates = [CLLocationCoordinate2D](repeating: kCLLocationCoordinate2DInvalid, count: polyline.pointCount)
+        var coordinates = [CLLocationCoordinate2D](repeating: CLLocationCoordinate2D(), count: polyline.pointCount)
         polyline.getCoordinates(&coordinates, range: NSRange(location: 0, length: polyline.pointCount))
         self.init(
             points: coordinates.map(GeoPoint.init),
