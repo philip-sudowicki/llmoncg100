@@ -1,32 +1,27 @@
 import SwiftUI
 
-/// Temporary root for milestone 1: lists the sample places with their status at the current time.
+/// Loads places, keeps the clock fresh and shows the map.
 struct RootView: View {
-    @State private var places: [Place] = []
-    private let engine = TideEngine(profile: .standard)
+    @Environment(PlaceStore.self) private var placeStore
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        NavigationStack {
-            List(places) { place in
-                let minute = Calendar.current.component(.hour, from: .now) * 60 + Calendar.current.component(.minute, from: .now)
-                HStack(spacing: 12) {
-                    StatusBadge(status: engine.status(of: place, at: minute))
-                    VStack(alignment: .leading) {
-                        Text(place.name).foregroundStyle(.ink)
-                        Text(TideText.nextChange(engine.nextChange(for: place, at: minute), now: minute))
-                            .font(.subheadline)
-                            .foregroundStyle(.inkSecondary)
-                    }
+        MapScreen()
+            .task {
+                await placeStore.load()
+            }
+            .task {
+                await placeStore.runClock()
+            }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    placeStore.refreshNow()
                 }
             }
-            .navigationTitle("Lowtide")
-        }
-        .task {
-            places = (try? LocalPlaceRepository().loadPlacesNow()) ?? []
-        }
     }
 }
 
 #Preview {
     RootView()
+        .previewEnvironment()
 }
