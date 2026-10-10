@@ -44,12 +44,14 @@ struct MapTopOverlay: View {
 struct SearchField: View {
     @Binding var text: String
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.inkSecondary)
                 .accessibilityHidden(true)
-            TextField(text: $text, prompt: Text("Search calm places").foregroundStyle(.inkSecondary)) {
+            TextField(text: $text, prompt: Text(dynamicTypeSize.isAccessibilitySize ? "Search" : "Search calm places").foregroundStyle(.inkSecondary)) {
                 Text("Search calm places")
             }
             .foregroundStyle(.ink)

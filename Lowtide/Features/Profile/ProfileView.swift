@@ -175,7 +175,7 @@ private struct SensitivityRow: View {
             selection: $selection
         )
 
-        if dynamicTypeSize.isAccessibilitySize {
+        if dynamicTypeSize >= .xxLarge {
             VStack(alignment: .leading, spacing: 8) {
                 title
                 picker
@@ -223,4 +223,16 @@ private struct ToggleLabel: View {
 #Preview("Edit profile") {
     ProfileView(mode: .edit)
         .previewEnvironment()
+}
+
+#Preview("Profile, largest text") {
+    ProfileView(mode: .edit)
+        .previewEnvironment()
+        .dynamicTypeSize(.accessibility3)
+}
+
+#Preview("Profile, dark") {
+    ProfileView(mode: .edit)
+        .previewEnvironment()
+        .preferredColorScheme(.dark)
 }

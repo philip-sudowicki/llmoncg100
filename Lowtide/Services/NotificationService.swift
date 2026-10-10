@@ -40,6 +40,12 @@ enum NotificationService {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier(for: placeID)])
     }
 
+    /// Removes every pending Alert me notification, for when Gentle alerts is switched off.
+    static func cancelAllCalmAlerts() async {
+        let identifiers = await scheduledPlaceIDs().map(identifier(for:))
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+
     static func scheduledPlaceIDs() async -> Set<String> {
         let identifiers = await UNUserNotificationCenter.current().pendingNotificationRequests().map(\.identifier)
         return Set(identifiers.filter { $0.hasPrefix(prefix) }.map { String($0.dropFirst(prefix.count)) })

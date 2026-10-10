@@ -113,7 +113,7 @@ struct CircleIconButton: View {
             Image(systemName: systemImage)
                 .font(.body.weight(.semibold))
                 .foregroundStyle(foreground)
-                .frame(width: max(44, size), height: max(44, size))
+                .frame(width: min(max(44, size), 60), height: min(max(44, size), 60))
                 .background(background, in: Circle())
                 .contentShape(Circle())
         }

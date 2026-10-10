@@ -10,6 +10,8 @@ final class PlaceStore {
     private(set) var centre: GeoPoint?
     private(set) var now: Date
     private(set) var loadFailed = false
+    /// True while the places are laid out around central London because no location was available.
+    private(set) var isFallbackCentre = false
 
     private let repository: any PlaceRepository
     let clock: DemoClock
@@ -54,10 +56,12 @@ final class PlaceStore {
         now = clock.now()
     }
 
-    /// Sets the demo centre once. Later location updates move the user, not the places.
-    func anchor(at point: GeoPoint) {
-        guard centre == nil else { return }
+    /// Sets the demo centre once. Later location updates move the user, not the places, except
+    /// that a fallback centre (central London) is replaced by the first real location fix.
+    func anchor(at point: GeoPoint, isFallback: Bool = false) {
+        guard centre == nil || (isFallbackCentre && !isFallback) else { return }
         centre = point
+        isFallbackCentre = isFallback
     }
 
     func place(id: String) -> Place? {

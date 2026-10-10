@@ -50,6 +50,13 @@ struct MapScreen: View {
                 mapModel.showDetail(for: placeID)
             }
         }
+        .onChange(of: locationService.point) { _, point in
+            // A fix that arrives after the fallback (slow GPS, or permission granted later in
+            // Settings) moves the places around the user once.
+            if let point, placeStore.isFallbackCentre {
+                placeStore.anchor(at: point)
+            }
+        }
         .onChange(of: placeStore.centre, initial: true) { _, centre in
             if let centre {
                 mapModel.focus(on: centre)
@@ -68,17 +75,22 @@ struct MapScreen: View {
     /// location is denied or slow to arrive.
     private func anchorPlaces() async {
         var waited = Duration.zero
+        // Counted only once permission is granted, so time spent reading the prompt doesn't count.
+        var waitedForFix = Duration.zero
         let step = Duration.milliseconds(250)
         while placeStore.centre == nil, !Task.isCancelled {
             if let point = locationService.point {
                 placeStore.anchor(at: point)
             } else if locationService.isUnavailable
-                        || (locationService.isAuthorized && waited >= .seconds(8))
-                        || waited >= .seconds(30) {
-                placeStore.anchor(at: .centralLondon)
+                        || waitedForFix >= .seconds(8)
+                        || waited >= .seconds(60) {
+                placeStore.anchor(at: .centralLondon, isFallback: true)
             } else {
                 try? await Task.sleep(for: step)
                 waited += step
+                if locationService.isAuthorized {
+                    waitedForFix += step
+                }
             }
         }
     }
@@ -87,4 +99,10 @@ struct MapScreen: View {
 #Preview("Map") {
     MapScreen()
         .previewEnvironment()
+}
+
+#Preview("Map, dark") {
+    MapScreen()
+        .previewEnvironment()
+        .preferredColorScheme(.dark)
 }

@@ -161,7 +161,9 @@ struct PlaceRow: View {
         let line = snapshot.statusLine(now: now)
         Button(action: action) {
             HStack(spacing: 12) {
-                IconTile(systemImage: snapshot.place.category.symbolName)
+                if !dynamicTypeSize.isAccessibilitySize {
+                    IconTile(systemImage: snapshot.place.category.symbolName)
+                }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(snapshot.place.name)
                         .font(.headline)
@@ -200,4 +202,13 @@ struct PlaceRow: View {
             NearbySheet()
         }
         .previewEnvironment()
+}
+
+#Preview("Sheet, largest text") {
+    Color.ground
+        .sheet(isPresented: .constant(true)) {
+            NearbySheet()
+        }
+        .previewEnvironment()
+        .dynamicTypeSize(.accessibility3)
 }

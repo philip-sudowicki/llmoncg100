@@ -74,7 +74,7 @@ struct StatusGlyph: View {
 
     var body: some View {
         WaveGlyph(count: status.waveCount)
-            .stroke(color ?? status.fill, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
+            .stroke(color ?? status.glyphColor, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
             .frame(width: width, height: width * 0.8)
             .accessibilityHidden(true)
     }
@@ -95,6 +95,15 @@ extension TideStatus {
         case .calm: .onCalm
         case .busy: .onBusy
         case .high: .onHigh
+        }
+    }
+
+    /// Colour for a bare glyph drawn on `surface` or `ground`, at 3:1 or better.
+    var glyphColor: Color {
+        switch self {
+        case .calm: .calm
+        case .busy: .busyGlyph
+        case .high: .high
         }
     }
 

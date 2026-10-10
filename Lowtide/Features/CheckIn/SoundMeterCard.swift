@@ -4,6 +4,8 @@ import SwiftUI
 struct SoundMeterCard: View {
     let meter: SoundMeter
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     @ScaledMetric(relativeTo: .headline) private var iconSize: CGFloat = 44
 
     var body: some View {
@@ -34,13 +36,18 @@ struct SoundMeterCard: View {
                 .buttonStyle(.outlined)
 
             case .measuring:
-                HStack(spacing: 12) {
+                let row = dynamicTypeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+                    : AnyLayout(HStackLayout(spacing: 12))
+                row {
                     StepMeter(level: meter.liveDecibels.map(SoundLevel.meterLevel) ?? 1)
                     Text(meter.liveDecibels.map { "Listening · about \(Int($0.rounded())) dB" } ?? "Listening…")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.ink)
                         .monospacedDigit()
-                    Spacer(minLength: 8)
+                    if !dynamicTypeSize.isAccessibilitySize {
+                        Spacer(minLength: 8)
+                    }
                     Text("\(meter.secondsLeft) s left")
                         .font(.subheadline)
                         .foregroundStyle(.inkSecondary)

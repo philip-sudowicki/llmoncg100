@@ -164,3 +164,13 @@ private struct FeelingCard: View {
         }
         .previewEnvironment()
 }
+
+#Preview("Check-in, dark, large text") {
+    Color.ground
+        .sheet(isPresented: .constant(true)) {
+            CheckInView(place: PreviewSupport.place())
+        }
+        .previewEnvironment()
+        .preferredColorScheme(.dark)
+        .dynamicTypeSize(.accessibility2)
+}

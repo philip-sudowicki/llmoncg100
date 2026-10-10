@@ -104,7 +104,7 @@ private struct PlaceDetailContent: View {
             .padding(.bottom, 32)
         }
         .background(Color.surface)
-        .task(id: place.id) {
+        .task(id: "\(place.id).\(profileStore.profile.gentleAlerts)") {
             isAlertScheduled = await NotificationService.scheduledPlaceIDs().contains(place.id)
         }
         .alert("Gentle alerts are off", isPresented: $isShowingAlertsOff) {
@@ -121,7 +121,13 @@ private struct PlaceDetailContent: View {
     // MARK: Header
 
     private func header(walk: Int, minute: Int) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .trailing, spacing: 8))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
+        return layout {
+            if dynamicTypeSize.isAccessibilitySize {
+                closeButton
+            }
             VStack(alignment: .leading, spacing: 4) {
                 Text(place.name)
                     .font(.title2.bold())
@@ -134,10 +140,16 @@ private struct PlaceDetailContent: View {
                     .font(.subheadline)
                     .foregroundStyle(.inkSecondary)
             }
-            Spacer(minLength: 8)
-            CircleIconButton(systemImage: "xmark", label: "Close") {
-                mapModel.closeDetail()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            if !dynamicTypeSize.isAccessibilitySize {
+                closeButton
             }
+        }
+    }
+
+    private var closeButton: some View {
+        CircleIconButton(systemImage: "xmark", label: "Close") {
+            mapModel.closeDetail()
         }
     }
 
@@ -172,9 +184,13 @@ private struct PlaceDetailContent: View {
     // MARK: Actions
 
     private func actions(engine: TideEngine, minute: Int, status: TideStatus?, change: TideChange, location: GeoPoint) -> some View {
-        let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: dynamicTypeSize.isAccessibilitySize ? 2 : 4)
+        // Four across at standard sizes; fewer as text grows, so "Directions" never breaks mid-word.
+        let count = dynamicTypeSize >= .accessibility2 ? 1 : (dynamicTypeSize >= .xLarge ? 2 : 4)
+        let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: count)
         let isRouteShown = mapModel.routePlaceID == place.id
         let isSaved = personalStore.isSaved(place.id)
+        // Gentle alerts is the master switch: with it off, no alert counts as set.
+        let isAlertOn = isAlertScheduled && profileStore.profile.gentleAlerts
 
         return LazyVGrid(columns: columns, spacing: 8) {
             ActionTile(
@@ -192,11 +208,11 @@ private struct PlaceDetailContent: View {
             .disabled(isRouting)
 
             ActionTile(
-                title: isAlertScheduled ? "Alert set" : "Alert me",
-                systemImage: isAlertScheduled ? "bell.fill" : "bell",
-                isOn: isAlertScheduled
+                title: isAlertOn ? "Alert set" : "Alert me",
+                systemImage: isAlertOn ? "bell.fill" : "bell",
+                isOn: isAlertOn
             ) {
-                if isAlertScheduled {
+                if isAlertOn {
                     NotificationService.cancelCalmAlert(placeID: place.id)
                     isAlertScheduled = false
                     announce("Alert cancelled.")
@@ -232,6 +248,8 @@ private struct PlaceDetailContent: View {
         defer { isRouting = false }
         do {
             let route = try await DirectionsService.walkingRoute(from: start, to: destination)
+            // The user may have closed this page or opened another place while the route loaded.
+            guard mapModel.path.last?.placeID == place.id else { return }
             mapModel.show(route, to: place.id)
             announce("Walking route shown on the map. About \(max(1, Int((route.expectedTravelTime / 60).rounded()))) minutes.")
         } catch {
@@ -249,7 +267,8 @@ private struct PlaceDetailContent: View {
             }
             return
         }
-        let start = TideText.displayMinute(window.start, now: minute)
+        // Round up to the next five minutes so the alert never arrives before it turns calm.
+        let start = min(((window.start + 4) / 5) * 5, window.end - 1)
         let until = window.end == place.hours.closes
             ? "until it closes at \(TideText.clock(window.end))"
             : "until about \(TideText.clock(TideText.displayMinute(window.end, now: minute)))"
@@ -312,4 +331,16 @@ struct StatusBanner: View {
 #Preview("Place page, high tide") {
     PlaceDetailView(placeID: "northgate-market")
         .previewEnvironment()
+}
+
+#Preview("Place page, dark") {
+    PlaceDetailView(placeID: "marlow-street-library")
+        .previewEnvironment()
+        .preferredColorScheme(.dark)
+}
+
+#Preview("Place page, largest text") {
+    PlaceDetailView(placeID: "larkspur-gardens")
+        .previewEnvironment()
+        .dynamicTypeSize(.accessibility3)
 }

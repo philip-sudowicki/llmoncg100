@@ -44,7 +44,14 @@ struct LowWaterView: View {
         .environment(\.colorScheme, .dark)
         .preferredColorScheme(.dark)
         .task {
-            await findLowWater()
+            // Closing a staff card makes this view appear again; keep the place already found.
+            guard finder.start == nil else { return }
+            findLowWater()
+        }
+        .onChange(of: finder.announcement) { _, announcement in
+            if let announcement {
+                AccessibilityNotification.Announcement(announcement).post()
+            }
         }
         .fullScreenCover(isPresented: $isShowingCards) {
             StaffCardsView()
@@ -53,25 +60,50 @@ struct LowWaterView: View {
 
     // MARK: Pieces
 
+    @ViewBuilder
     private var topBar: some View {
-        HStack {
-            CircleIconButton(systemImage: "xmark", label: "Close", foreground: .lowWaterInk, background: .lowWaterCard) {
-                dismiss()
+        if dynamicTypeSize.isAccessibilitySize {
+            // At very large text the title gets its own line instead of squeezing between the controls.
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    closeButton
+                    Spacer(minLength: 8)
+                    dimmedLabel
+                }
+                title
             }
-            Spacer()
-            Text("Low water")
-                .font(.headline)
-                .foregroundStyle(.lowWaterInk)
-                .accessibilityAddTraits(.isHeader)
-            Spacer()
-            Label("Dimmed", systemImage: "moon")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.lowWaterInkSecondary)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(Color.lowWaterCard, in: Capsule())
-                .accessibilityLabel("Dimmed colours")
+        } else {
+            HStack {
+                closeButton
+                Spacer()
+                title
+                Spacer()
+                dimmedLabel
+            }
         }
+    }
+
+    private var closeButton: some View {
+        CircleIconButton(systemImage: "xmark", label: "Close", foreground: .lowWaterInk, background: .lowWaterCard) {
+            dismiss()
+        }
+    }
+
+    private var title: some View {
+        Text("Low water")
+            .font(.headline)
+            .foregroundStyle(.lowWaterInk)
+            .accessibilityAddTraits(.isHeader)
+    }
+
+    private var dimmedLabel: some View {
+        Label("Dimmed", systemImage: "moon")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.lowWaterInkSecondary)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Color.lowWaterCard, in: Capsule())
+            .accessibilityLabel("Dimmed colours")
     }
 
     private var subtitle: String {
@@ -89,10 +121,12 @@ struct LowWaterView: View {
     private var resultCard: some View {
         switch finder.state {
         case .searching:
-            ProgressView()
-                .tint(.lowWaterAccent)
+            // A still placeholder: the breathing circle is the screen's only motion.
+            Text("Finding the nearest calm place…")
+                .font(.subheadline)
+                .foregroundStyle(.lowWaterInkSecondary)
                 .frame(maxWidth: .infinity, minHeight: 120)
-                .accessibilityLabel("Finding a calm place")
+                .background(Color.lowWaterCard, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         case .found(let result):
             LowWaterCard(result: result, start: finder.start)
         case .nothingOpen:
@@ -170,22 +204,19 @@ struct LowWaterView: View {
         return message
     }
 
-    private func findLowWater() async {
+    private func findLowWater() {
         let start = locationService.point ?? placeStore.centre ?? .centralLondon
         var locations: [String: GeoPoint] = [:]
         for place in placeStore.places {
             locations[place.id] = placeStore.location(of: place)
         }
-        await finder.find(
+        finder.find(
             places: placeStore.places,
             locations: locations,
             engine: profileStore.engine,
             minute: placeStore.minuteOfDay,
             from: start
         )
-        if case .found(let result) = finder.state {
-            AccessibilityNotification.Announcement("\(result.place.name), \(result.minutes) minute walk.").post()
-        }
     }
 }
 
@@ -194,9 +225,15 @@ private struct LowWaterCard: View {
     let result: LowWaterResult
     let start: GeoPoint?
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
+        // At very large text the walking time sits under the name instead of beside it.
+        let header = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
         VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top, spacing: 12) {
+            header {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(result.isCalm ? "Nearest low water" : "Quietest nearby")
                         .font(.caption.weight(.bold))
@@ -214,8 +251,10 @@ private struct LowWaterCard: View {
                             .foregroundStyle(.lowWaterInkSecondary)
                     }
                 }
-                Spacer(minLength: 8)
-                VStack(alignment: .trailing, spacing: 2) {
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Spacer(minLength: 8)
+                }
+                VStack(alignment: dynamicTypeSize.isAccessibilitySize ? .leading : .trailing, spacing: 2) {
                     Text("\(result.minutes) min")
                         .font(.title3.bold())
                         .foregroundStyle(.lowWaterInk)
@@ -227,6 +266,8 @@ private struct LowWaterCard: View {
             .accessibilityElement(children: .combine)
 
             RoutePreview(route: result.route, start: start, destination: result.location)
+                // The map's initial framing is fixed, so rebuild it when the real route arrives.
+                .id(result.route == nil ? "line" : "route")
                 .frame(height: 120)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
 
@@ -328,4 +369,13 @@ private struct RoutePreview: View {
             LowWaterView()
         }
         .previewEnvironment()
+}
+
+#Preview("Find low water, largest text") {
+    Color.ground
+        .fullScreenCover(isPresented: .constant(true)) {
+            LowWaterView()
+        }
+        .previewEnvironment()
+        .dynamicTypeSize(.accessibility3)
 }

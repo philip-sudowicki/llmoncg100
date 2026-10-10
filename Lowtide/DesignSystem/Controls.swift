@@ -10,9 +10,14 @@ struct SegmentedChoice<Value: Hashable & Identifiable>: View {
     @Binding var selection: Value
 
     @Environment(\.colorSchemeContrast) private var contrast
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        HStack(spacing: 2) {
+        // At accessibility text sizes the options stack, so their labels never shrink or truncate.
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(spacing: 2))
+            : AnyLayout(HStackLayout(spacing: 2))
+        layout {
             ForEach(options) { option in
                 let isSelected = option == selection
                 Button {
@@ -21,8 +26,8 @@ struct SegmentedChoice<Value: Hashable & Identifiable>: View {
                     Text(label(option))
                         .font(.subheadline.weight(isSelected ? .semibold : .regular))
                         .foregroundStyle(.ink)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, 6)
                         .frame(maxWidth: .infinity, minHeight: 44)
                         .background {
@@ -32,7 +37,7 @@ struct SegmentedChoice<Value: Hashable & Identifiable>: View {
                                     .shadow(color: .black.opacity(0.10), radius: 3, y: 1)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                            .strokeBorder(contrast == .increased ? Color.ink : Color.divider, lineWidth: 1)
+                                            .strokeBorder(contrast == .increased ? Color.ink : Color.calmDeep, lineWidth: 1.5)
                                     )
                             }
                         }

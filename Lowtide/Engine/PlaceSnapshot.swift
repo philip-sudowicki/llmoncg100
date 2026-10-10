@@ -21,6 +21,18 @@ struct PlaceSnapshot: Identifiable, Sendable {
         self.distance = reference.distance(to: location)
     }
 
+    /// True when the place should still be calm and open a while after the user walks there,
+    /// so Find low water doesn't send someone to a place about to turn busy or close.
+    func staysCalm(afterWalkingFrom minute: Int, marginMinutes: Int = 10) -> Bool {
+        let arrival = minute + walkMinutes + marginMinutes
+        switch change {
+        case .calmUntil(let end), .calmUntilClosing(let end):
+            return end >= arrival
+        case .calmFrom, .notCalmAgainToday, .closed:
+            return false
+        }
+    }
+
     /// "Calm until 3:30pm · 3 min walk", or "Busy now · calm from 3pm · 4 min walk".
     func statusLine(now: Int) -> String {
         let changeText = TideText.nextChange(change, now: now)

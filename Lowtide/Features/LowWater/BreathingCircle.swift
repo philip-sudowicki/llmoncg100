@@ -9,6 +9,9 @@ struct BreathingCircle: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .title) private var size: CGFloat = 176
 
+    /// Grows a little with text size, but never so much that it pushes the calm place off screen.
+    private var side: CGFloat { min(size, 220) }
+
     var body: some View {
         Group {
             if reduceMotion {
@@ -21,7 +24,7 @@ struct BreathingCircle: View {
                 }
             }
         }
-        .frame(width: size, height: size)
+        .frame(width: side, height: side)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Breathing guide")
         .accessibilityValue("Breathe in slowly for five seconds, then out for five seconds.")
@@ -33,10 +36,10 @@ struct BreathingCircle: View {
                 .stroke(Color.lowWaterAccent.opacity(0.35), lineWidth: 1)
             Circle()
                 .fill(Color.lowWaterCard)
-                .padding(size * 0.1)
+                .padding(side * 0.1)
             Circle()
                 .fill(Color.lowWaterBreath)
-                .padding(size * 0.2)
+                .padding(side * 0.2)
                 .scaleEffect(scale)
             VStack(spacing: 2) {
                 Text(inhaling ? "Breathe in" : "Breathe out")
@@ -47,7 +50,9 @@ struct BreathingCircle: View {
             .foregroundStyle(.lowWaterInk)
             .multilineTextAlignment(.center)
             .minimumScaleFactor(0.6)
-            .padding(size * 0.24)
+            // The words sit inside a capped circle; VoiceOver reads the full guide from the value.
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+            .padding(side * 0.24)
         }
     }
 

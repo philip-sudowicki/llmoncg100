@@ -31,7 +31,7 @@ struct IconTile: View {
         Image(systemName: systemImage)
             .font(.title3)
             .foregroundStyle(foreground)
-            .frame(width: size, height: size)
+            .frame(width: min(size, 60), height: min(size, 60))
             .background(background, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .accessibilityHidden(true)
     }

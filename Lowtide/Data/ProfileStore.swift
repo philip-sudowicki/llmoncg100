@@ -22,6 +22,7 @@ final class ProfileStore {
     var engine: TideEngine { TideEngine(profile: profile) }
 
     func save(_ newProfile: SensoryProfile) {
+        let turnsAlertsOff = profile.gentleAlerts && !newProfile.gentleAlerts
         if let record = try? context.fetch(FetchDescriptor<ProfileRecord>()).first {
             record.apply(newProfile)
         } else {
@@ -30,6 +31,12 @@ final class ProfileStore {
         try? context.save()
         profile = newProfile
         hasCompletedOnboarding = true
+        if turnsAlertsOff {
+            // Gentle alerts is the master switch for Alert me.
+            Task {
+                await NotificationService.cancelAllCalmAlerts()
+            }
+        }
     }
 
     func setGentleAlerts(_ isOn: Bool) {

@@ -30,6 +30,9 @@ final class MapModel {
 
     /// Shows a place's details in the sheet and raises it.
     func showDetail(for placeID: String) {
+        if routePlaceID != nil, routePlaceID != placeID {
+            clearRoute()
+        }
         selectedPlaceID = placeID
         if path.last?.placeID != placeID {
             path = [PlaceRoute(placeID: placeID)]
@@ -38,6 +41,7 @@ final class MapModel {
     }
 
     func closeDetail() {
+        clearRoute()
         path = []
         selectedPlaceID = nil
         detent = Self.peekDetent

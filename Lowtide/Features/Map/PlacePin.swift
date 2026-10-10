@@ -63,6 +63,7 @@ struct TideLegend: View {
         .shadow(color: .black.opacity(0.10), radius: 6, y: 2)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Legend: one wave means calm, two waves busy, three waves high tide")
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     }
 }
 

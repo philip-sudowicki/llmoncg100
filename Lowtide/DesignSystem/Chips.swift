@@ -12,6 +12,9 @@ struct Chip: View {
 
     @Environment(\.colorSchemeContrast) private var contrast
 
+    /// A capsule at one line; long labels at large text sizes wrap inside the same rounded shape.
+    private static let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 6) {
@@ -24,20 +27,21 @@ struct Chip: View {
                 }
                 Text(title)
                     .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, 16)
+            .padding(.vertical, 6)
             .frame(minHeight: 44)
             .foregroundStyle(isSelected ? Color.surface : Color.ink)
-            .background(isSelected ? Color.ink : Color.surface, in: Capsule())
+            .background(isSelected ? Color.ink : Color.surface, in: Self.shape)
             .overlay(
-                Capsule().strokeBorder(
+                Self.shape.strokeBorder(
                     isSelected ? Color.clear : Color.divider,
                     lineWidth: contrast == .increased ? 1.5 : 1
                 )
             )
             .shadow(color: floating ? Color.black.opacity(0.10) : .clear, radius: 6, y: 2)
-            .contentShape(Capsule())
+            .contentShape(Self.shape)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
