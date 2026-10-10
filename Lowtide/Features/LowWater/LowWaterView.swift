@@ -136,7 +136,7 @@ struct LowWaterView: View {
                 .font(.subheadline)
                 .foregroundStyle(.lowWaterInkSecondary)
                 .frame(maxWidth: .infinity, minHeight: 120)
-                .background(Color.lowWaterCard, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .background(Color.lowWaterCard, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         case .found(let result):
             LowWaterCard(result: result, start: finder.start)
         case .nothingOpen:
@@ -281,7 +281,7 @@ private struct LowWaterCard: View {
                 // The map's initial framing is fixed, so rebuild it when the real route arrives.
                 .id(result.route == nil ? "line" : "route")
                 .frame(height: 120)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             if let instruction = result.instruction {
                 Rectangle()
@@ -310,7 +310,7 @@ private struct LowWaterCard: View {
             }
         }
         .padding(16)
-        .background(Color.lowWaterCard, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(Color.lowWaterCard, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
     static func turnSymbol(for instruction: String) -> String {

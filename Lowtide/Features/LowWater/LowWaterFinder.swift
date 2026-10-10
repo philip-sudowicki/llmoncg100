@@ -44,6 +44,10 @@ final class LowWaterFinder {
     @ObservationIgnored private var etas: [WalkingETA?] = []
     @ObservationIgnored private var answers = 0
     @ObservationIgnored private var candidatesAreCalm = true
+    /// True when the candidates were chosen because they stay calm for the walk plus a margin;
+    /// false when they are short-lived calm places used because nothing lasts longer.
+    @ObservationIgnored private var choseLasting = true
+    @ObservationIgnored private var announcedPlaceID: String?
     @ObservationIgnored private var minute = 0
 
     func find(places: [Place], locations: [String: GeoPoint], engine: TideEngine, minute: Int, from start: GeoPoint) {
@@ -78,6 +82,7 @@ final class LowWaterFinder {
         } else {
             // Prefer places that stay calm and open until well after the user gets there.
             let lasting = calm.filter { $0.staysCalm(afterWalkingFrom: minute) }
+            choseLasting = !lasting.isEmpty
             candidates = Array((lasting.isEmpty ? calm : lasting).prefix(3))
             candidatesAreCalm = true
         }
@@ -117,7 +122,11 @@ final class LowWaterFinder {
         let eta = etas[index]
         let result = makeResult(chosen, eta: eta, route: nil)
         state = .found(result)
-        announcement = "\(chosen.place.name), \(result.minutes) minute walk."
+        // Don't repeat the same place to VoiceOver after a refresh finds it again.
+        if announcedPlaceID != chosen.id {
+            announcement = "\(chosen.place.name), \(result.minutes) minute walk."
+            announcedPlaceID = chosen.id
+        }
 
         let destination = chosen.location
         Task { [weak self] in
@@ -135,7 +144,8 @@ final class LowWaterFinder {
     func refresh(engine: TideEngine, minute: Int) -> Bool {
         guard case .found(let shown) = state, shown.isCalm, let start else { return true }
         let snapshot = PlaceSnapshot(place: shown.place, location: shown.location, engine: engine, minute: minute, from: start)
-        guard snapshot.status == .calm, snapshot.staysCalm(afterWalkingFrom: minute) else { return false }
+        // A short-lived fallback only needs to stay calm; a lasting choice must still last.
+        guard snapshot.status == .calm, !choseLasting || snapshot.staysCalm(afterWalkingFrom: minute) else { return false }
         self.minute = minute
         state = .found(LowWaterResult(
             place: shown.place,
