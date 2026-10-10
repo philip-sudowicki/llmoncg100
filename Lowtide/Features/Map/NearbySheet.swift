@@ -32,6 +32,9 @@ struct NearbySheet: View {
         .sheet(item: $mapModel.checkInPlace) { place in
             CheckInView(place: place)
         }
+        .fullScreenCover(isPresented: $mapModel.isShowingLowWater) {
+            LowWaterView()
+        }
     }
 }
 
