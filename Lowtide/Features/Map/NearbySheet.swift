@@ -29,6 +29,9 @@ struct NearbySheet: View {
         .fullScreenCover(isPresented: $mapModel.isShowingProfile) {
             ProfileView(mode: .edit)
         }
+        .sheet(item: $mapModel.checkInPlace) { place in
+            CheckInView(place: place)
+        }
     }
 }
 
