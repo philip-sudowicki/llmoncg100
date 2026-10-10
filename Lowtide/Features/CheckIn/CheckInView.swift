@@ -121,6 +121,7 @@ struct CheckInView: View {
         let decibels = profileStore.profile.shareSoundReadings && meter.phase == .finished ? meter.result : nil
         personalStore.addCheckIn(placeID: place.id, feeling: feeling, noticed: noticed, decibels: decibels, at: placeStore.now)
         confirmations += 1
+        AccessibilityNotification.Announcement("Check-in saved for \(place.name).").post()
         meter.cancel()
         dismiss()
     }

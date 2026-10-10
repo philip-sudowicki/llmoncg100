@@ -50,7 +50,12 @@ final class MapModel {
     /// Keeps selection in step when the sheet's navigation pops.
     func pathChanged() {
         if path.isEmpty {
+            // A pop by any means (for example the VoiceOver escape gesture) cleans up like Close.
             selectedPlaceID = nil
+            clearRoute()
+            if detent == .large {
+                detent = Self.peekDetent
+            }
         }
     }
 

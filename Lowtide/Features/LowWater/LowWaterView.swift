@@ -48,6 +48,12 @@ struct LowWaterView: View {
             guard finder.start == nil else { return }
             findLowWater()
         }
+        .onChange(of: placeStore.minuteOfDay) { _, minute in
+            // Someone may sit with the breathing circle for a while; keep the answer true.
+            if !finder.refresh(engine: profileStore.engine, minute: minute) {
+                findLowWater()
+            }
+        }
         .onChange(of: finder.announcement) { _, announcement in
             if let announcement {
                 AccessibilityNotification.Announcement(announcement).post()
@@ -110,6 +116,10 @@ struct LowWaterView: View {
         switch finder.state {
         case .searching:
             "Looking for a calm place nearby."
+        case .found(let result) where locationService.point == nil:
+            result.isCalm
+                ? "Location is off, so this is the nearest calm place to central London."
+                : "Location is off. This is the quietest place near central London."
         case .found(let result):
             result.isCalm ? TideText.calmPlaceAway(minutes: result.minutes) : "Nothing is calm nearby, but this is the quietest place."
         case .nothingOpen:
@@ -200,6 +210,8 @@ struct LowWaterView: View {
         }
         if let here = locationService.point?.appleMapsURL() {
             message += " I'm here: \(here.absoluteString)"
+        } else {
+            message += " My location isn't available right now."
         }
         return message
     }

@@ -106,13 +106,13 @@ final class LowWaterFinder {
         }
     }
 
-    /// Shows the shortest walk known so far (or the nearest place in a straight line), then fetches its route.
+    /// Shows the shortest walk, then fetches its route. Places whose walking time hasn't arrived yet
+    /// are compared using a straight-line estimate, so a slow answer never loses to a farther place.
     private func choose(search current: Int) {
         guard current == search, case .searching = state, !candidates.isEmpty, let start else { return }
-        let index = etas.enumerated()
-            .compactMap { index, eta in eta.map { (index, $0.travelTime) } }
-            .min { $0.1 < $1.1 }?
-            .0 ?? 0
+        let index = candidates.indices.min { lhs, rhs in
+            travelTime(at: lhs) < travelTime(at: rhs)
+        } ?? 0
         let chosen = candidates[index]
         let eta = etas[index]
         let result = makeResult(chosen, eta: eta, route: nil)
@@ -124,6 +124,31 @@ final class LowWaterFinder {
             let route = try? await DirectionsService.walkingRoute(from: start, to: destination)
             self?.attach(route, to: chosen, eta: eta, search: current)
         }
+    }
+
+    private func travelTime(at index: Int) -> TimeInterval {
+        etas[index]?.travelTime ?? TimeInterval(candidates[index].walkMinutes * 60)
+    }
+
+    /// Called each minute while the screen is open. Keeps "quiet until" current, and returns false
+    /// when the chosen place no longer stays calm long enough, so the caller can search again.
+    func refresh(engine: TideEngine, minute: Int) -> Bool {
+        guard case .found(let shown) = state, shown.isCalm, let start else { return true }
+        let snapshot = PlaceSnapshot(place: shown.place, location: shown.location, engine: engine, minute: minute, from: start)
+        guard snapshot.status == .calm, snapshot.staysCalm(afterWalkingFrom: minute) else { return false }
+        self.minute = minute
+        state = .found(LowWaterResult(
+            place: shown.place,
+            location: shown.location,
+            isCalm: true,
+            statusText: TideText.lowWaterStatus(snapshot.change, now: minute),
+            minutes: shown.minutes,
+            metres: shown.metres,
+            route: shown.route,
+            instruction: shown.instruction,
+            instructionDetail: shown.instructionDetail
+        ))
+        return true
     }
 
     private func attach(_ route: MKRoute?, to chosen: PlaceSnapshot, eta: WalkingETA?, search current: Int) {

@@ -34,6 +34,7 @@ struct MapTopOverlay: View {
             .scrollClipDisabled()
 
             TideLegend()
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                 .padding(.horizontal, 16)
         }
         .padding(.vertical, 8)

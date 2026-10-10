@@ -72,9 +72,22 @@ LowtideTests/     Engine, wording, filtering and sample-data tests
 
 ## Accessibility
 
-- Dynamic Type text styles are used throughout. Rows, action buttons, choice cards and headers reflow at accessibility sizes. Map pins stop growing at the largest non-accessibility size so the map stays readable. The list below the map has no such cap.
+- Dynamic Type text styles are used throughout. Rows, action buttons, choice cards and headers reflow at accessibility sizes, and decorative icons step aside so text keeps the full width. Map pins and the legend stop growing at the largest non-accessibility size so the map stays readable. The list below the map has no such cap.
 - Every status has a glyph (1, 2 or 3 waves) as well as a colour.
 - VoiceOver gets labels for pins and rows. The tide chart has a summary and an Audio Graph.
 - Reduce Motion stops the breathing animation. Increase Contrast uses darker colour variants and stronger borders.
 - All tap targets are at least 44 × 44 pt. The system segmented control and switches are smaller than that, so the profile uses a 44 pt segmented control and full-row toggles. VoiceOver still reads them as a standard segmented picker and switch.
 - The only haptic is a light tap when a check-in is saved. The app plays no sounds, and Alert me notifications are silent.
+
+## Where v1 differs from the brief
+
+- **Project and builds.** The repository had no Xcode project, so `Lowtide.xcodeproj` was written by hand using Xcode 16 synchronized folders. It was developed on Linux, so every milestone was built and tested with `xcodebuild` on a GitHub Actions macOS runner instead.
+- **Segmented pickers and switches** are custom 44 pt controls. The system ones are smaller than the brief's minimum tap target. VoiceOver reads them as a standard segmented picker and switch.
+- **"Calm now"** filters the list in the sheet. Every pin stays on the map, as in the mockup, so you can also see where to avoid.
+- **The legend** sits under the filter chips rather than above the sheet, so it stays visible at every sheet height.
+- **"Updated just now"** is shown as "As of 2:14pm". The place page's footer says the forecasts are sample data instead of "built from recent check-ins", because v1 has no shared check-ins.
+- **Good match for you** follows the brief's rule exactly: it appears only when the next three hours are calm.
+- **Find low water** prefers places that stay calm and open for the walk plus 10 minutes. If nothing is calm it offers the quietest open place, and it never waits more than 4 seconds for Apple's walking times.
+- **Times** are shown to the nearest half hour, because the forecasts are hourly. Alert me rounds *up* to the next five minutes, so it never fires before a place turns calm.
+- **Extra colour tokens** were added beyond the brief's table: `surface`, `on*` colours for glyphs and button text, `highTint`, `busyGlyph`, and low-water ink and breath colours. In dark mode `calmDeep` becomes light blue with dark text, because white text on the light-mode colour would fail 4.5:1 on dark backgrounds.
+

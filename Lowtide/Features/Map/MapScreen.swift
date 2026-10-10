@@ -25,6 +25,8 @@ struct MapScreen: View {
                         mapModel.showDetail(for: place.id)
                     }
                     .accessibilityLabel("\(place.name), \(spoken)")
+                    // Applied here so the pin's scaled badge is capped too, not only its text.
+                    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                 }
                 .annotationTitles(.hidden)
                 .tag(place.id)
@@ -57,7 +59,11 @@ struct MapScreen: View {
                 placeStore.anchor(at: point)
             }
         }
-        .onChange(of: placeStore.centre, initial: true) { _, centre in
+        .onChange(of: placeStore.centre, initial: true) { old, centre in
+            if old != nil {
+                // The places moved, so any route drawn to their old positions is wrong.
+                mapModel.clearRoute()
+            }
             if let centre {
                 mapModel.focus(on: centre)
             }
@@ -79,8 +85,11 @@ struct MapScreen: View {
         var waitedForFix = Duration.zero
         let step = Duration.milliseconds(250)
         while placeStore.centre == nil, !Task.isCancelled {
-            if let point = locationService.point {
+            if let point = locationService.precisePoint {
                 placeStore.anchor(at: point)
+            } else if waitedForFix >= .seconds(8), let rough = locationService.point {
+                // No precise fix in time: the best one so far is still better than London.
+                placeStore.anchor(at: rough)
             } else if locationService.isUnavailable
                         || waitedForFix >= .seconds(8)
                         || waited >= .seconds(60) {

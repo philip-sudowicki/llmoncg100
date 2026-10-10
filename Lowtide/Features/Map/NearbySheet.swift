@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// The persistent bottom sheet, like Apple Maps. It holds the nearby list and, when a pin or row
 /// is tapped, that place's page in a `NavigationStack`.
@@ -42,8 +43,10 @@ struct NearbySheet: View {
 struct NearbyList: View {
     @Environment(PlaceStore.self) private var placeStore
     @Environment(ProfileStore.self) private var profileStore
+    @Environment(PersonalStore.self) private var personalStore
     @Environment(LocationService.self) private var locationService
     @Environment(MapModel.self) private var mapModel
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         let engine = profileStore.engine
@@ -67,6 +70,10 @@ struct NearbyList: View {
                         title
                         asOf(minute)
                     }
+                }
+
+                if placeStore.isFallbackCentre {
+                    locationOffNotice
                 }
 
                 Button {
@@ -94,9 +101,16 @@ struct NearbyList: View {
                             Image(systemName: "plus.circle")
                                 .font(.title3)
                                 .accessibilityHidden(true)
-                            Text("How's the tide where you are?")
-                                .font(.headline)
-                                .multilineTextAlignment(.leading)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("How's the tide where you are?")
+                                    .font(.headline)
+                                if let nearestOpen {
+                                    Text("At \(nearestOpen.place.name)")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.inkSecondary)
+                                }
+                            }
+                            .multilineTextAlignment(.leading)
                             Spacer(minLength: 8)
                             Image(systemName: "chevron.right")
                                 .font(.footnote.weight(.semibold))
@@ -110,6 +124,20 @@ struct NearbyList: View {
                     .buttonStyle(.plain)
                     .disabled(nearestOpen == nil)
                     .accessibilityHint(nearestOpen.map { "Check in at \($0.place.name)" } ?? "Nothing is open nearby")
+
+                    // Confirms a check-in made from this row, whose place may not be in the list above.
+                    if let nearestOpen, let checkIn = personalStore.latestCheckIns[nearestOpen.id],
+                       Calendar.current.isDate(checkIn.date, inSameDayAs: placeStore.now) {
+                        HStack(spacing: 8) {
+                            StatusGlyph(status: checkIn.feeling.status)
+                            Text("\(nearestOpen.place.name): \(TideText.lowercasedFirst(TideText.checkIn(checkIn.feeling, at: checkIn.date, today: placeStore.now)))")
+                                .font(.subheadline)
+                                .foregroundStyle(.inkSecondary)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.bottom, 8)
+                        .accessibilityElement(children: .combine)
+                    }
                 }
             }
             .padding(.horizontal, 20)
@@ -117,6 +145,31 @@ struct NearbyList: View {
             .padding(.bottom, 16)
         }
         .background(Color.surface)
+    }
+
+    /// Shown while places are laid out around central London because location is off or unavailable.
+    private var locationOffNotice: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Label("Location is off", systemImage: "location.slash")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.ink)
+            Text("These sample places are shown around central London, and walking times are from there.")
+                .font(.subheadline)
+                .foregroundStyle(.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+            if locationService.isUnavailable, let settings = URL(string: UIApplication.openSettingsURLString) {
+                Button("Turn on location in Settings") {
+                    openURL(settings)
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.calmDeep)
+                .frame(minHeight: 44)
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.ground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .accessibilityElement(children: .contain)
     }
 
     private var title: some View {

@@ -52,6 +52,17 @@ final class LocationService {
         location.map { GeoPoint($0.coordinate) }
     }
 
+    /// The location only when it is recent (under 15 s old) and accurate to 100 m, so the places
+    /// aren't laid out around a cached or cell-tower position.
+    var precisePoint: GeoPoint? {
+        guard let location,
+              location.horizontalAccuracy >= 0,
+              location.horizontalAccuracy <= 100,
+              location.timestamp.timeIntervalSinceNow > -15
+        else { return nil }
+        return GeoPoint(location.coordinate)
+    }
+
     private func handleAuthorization(_ status: CLAuthorizationStatus) {
         authorization = status
         if isAuthorized {

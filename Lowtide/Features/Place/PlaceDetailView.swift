@@ -104,7 +104,8 @@ private struct PlaceDetailContent: View {
             .padding(.bottom, 32)
         }
         .background(Color.surface)
-        .task(id: "\(place.id).\(profileStore.profile.gentleAlerts)") {
+        // Rechecked every minute so 'Alert set' clears once the alert has fired.
+        .task(id: "\(place.id).\(profileStore.profile.gentleAlerts).\(minute)") {
             isAlertScheduled = await NotificationService.scheduledPlaceIDs().contains(place.id)
         }
         .alert("Gentle alerts are off", isPresented: $isShowingAlertsOff) {
@@ -141,10 +142,13 @@ private struct PlaceDetailContent: View {
                     .foregroundStyle(.inkSecondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            // VoiceOver reads the place name first even when Close sits above it.
+            .accessibilitySortPriority(1)
             if !dynamicTypeSize.isAccessibilitySize {
                 closeButton
             }
         }
+        .accessibilityElement(children: .contain)
     }
 
     private var closeButton: some View {
@@ -201,6 +205,7 @@ private struct PlaceDetailContent: View {
             ) {
                 if isRouteShown {
                     mapModel.clearRoute()
+                    announce("Route hidden.")
                 } else {
                     Task { await showDirections(to: location) }
                 }
@@ -248,8 +253,9 @@ private struct PlaceDetailContent: View {
         defer { isRouting = false }
         do {
             let route = try await DirectionsService.walkingRoute(from: start, to: destination)
-            // The user may have closed this page or opened another place while the route loaded.
-            guard mapModel.path.last?.placeID == place.id else { return }
+            // The user may have closed this page, opened another place, or the places may have moved
+            // to a new location fix while the route loaded.
+            guard mapModel.path.last?.placeID == place.id, placeStore.location(of: place) == destination else { return }
             mapModel.show(route, to: place.id)
             announce("Walking route shown on the map. About \(max(1, Int((route.expectedTravelTime / 60).rounded()))) minutes.")
         } catch {
