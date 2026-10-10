@@ -101,6 +101,7 @@ extension HowItFeelsCard {
 struct GoodToKnowCard: View {
     let place: Place
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .body) private var iconWidth: CGFloat = 28
 
     var body: some View {
@@ -109,11 +110,14 @@ struct GoodToKnowCard: View {
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
                     HStack(spacing: 12) {
-                        Image(systemName: line.kind.symbolName)
-                            .font(.body)
-                            .foregroundStyle(.calmDeep)
-                            .frame(width: iconWidth)
-                            .accessibilityHidden(true)
+                        // The icon is decorative; at accessibility sizes the text gets the full width.
+                        if !dynamicTypeSize.isAccessibilitySize {
+                            Image(systemName: line.kind.symbolName)
+                                .font(.body)
+                                .foregroundStyle(.calmDeep)
+                                .frame(width: iconWidth)
+                                .accessibilityHidden(true)
+                        }
                         Text(line.text)
                             .font(.body)
                             .foregroundStyle(.ink)
