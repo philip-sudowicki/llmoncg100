@@ -311,7 +311,7 @@ struct StatusBanner: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 14) {
-            StatusBadge(status: status, size: badgeSize)
+            StatusBadge(status: status, size: min(badgeSize, 56))
             VStack(alignment: .leading, spacing: 2) {
                 Text(banner.title)
                     .font(.headline)

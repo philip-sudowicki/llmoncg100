@@ -103,6 +103,9 @@ struct TideChartCard: View {
                     }
                 }
                 .frame(height: 170)
+                // Axis and line labels are part of the graphic; at larger sizes they would collide.
+                // The full reading is in the accessibility summary and the text around the chart.
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Today's tide for you")
                 .accessibilityValue(summary(curve: curve, bestText: bestText, takeaway: takeaway, isOpen: isOpen, nowScore: nowScore))

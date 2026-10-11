@@ -72,8 +72,8 @@
       "category": "cafe",
       "street": "Finch Lane",
       "offset": {
-        "east": 90,
-        "north": 230
+        "east": 150,
+        "north": 270
       },
       "hours": {
         "opens": "07:30",
@@ -133,8 +133,8 @@
       "category": "market",
       "street": "Market Square",
       "offset": {
-        "east": -150,
-        "north": 40
+        "east": -160,
+        "north": 60
       },
       "hours": {
         "opens": "08:00",
@@ -193,8 +193,8 @@
       "category": "park",
       "street": "Larkspur Rd",
       "offset": {
-        "east": 250,
-        "north": -40
+        "east": 210,
+        "north": -90
       },
       "hours": {
         "opens": "07:00",
@@ -249,8 +249,8 @@
       "category": "station",
       "street": "Kingsway",
       "offset": {
-        "east": -130,
-        "north": -130
+        "east": -150,
+        "north": -110
       },
       "hours": {
         "opens": "05:00",
@@ -314,8 +314,8 @@
       "category": "library",
       "street": "Ashby Grove",
       "offset": {
-        "east": 380,
-        "north": 300
+        "east": 430,
+        "north": 470
       },
       "hours": {
         "opens": "10:00",
@@ -366,8 +366,8 @@
       "category": "cafe",
       "street": "Mill Lane",
       "offset": {
-        "east": -360,
-        "north": 330
+        "east": -470,
+        "north": 420
       },
       "hours": {
         "opens": "08:00",
@@ -426,8 +426,8 @@
       "category": "cafe",
       "street": "Quay St",
       "offset": {
-        "east": 330,
-        "north": -290
+        "east": 440,
+        "north": -400
       },
       "hours": {
         "opens": "07:00",
@@ -487,8 +487,8 @@
       "category": "bookshop",
       "street": "Lantern Yard",
       "offset": {
-        "east": -320,
-        "north": -300
+        "east": -450,
+        "north": -360
       },
       "hours": {
         "opens": "09:30",
@@ -538,8 +538,8 @@
       "category": "quietRoom",
       "street": "Canal Walk",
       "offset": {
-        "east": 120,
-        "north": -330
+        "east": 60,
+        "north": -470
       },
       "hours": {
         "opens": "09:00",

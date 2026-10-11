@@ -60,7 +60,7 @@ final class MapModel {
     }
 
     func focus(on centre: GeoPoint) {
-        position = .region(MKCoordinateRegion(center: centre.coordinate, latitudinalMeters: 1_100, longitudinalMeters: 1_100))
+        position = .region(MKCoordinateRegion(center: centre.coordinate, latitudinalMeters: 700, longitudinalMeters: 700))
     }
 
     /// Draws a walking route and lowers the sheet so the route is visible.

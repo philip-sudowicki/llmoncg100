@@ -72,7 +72,7 @@ jobs:
           xcrun simctl location "$DEVICE_ID" set 51.5074,-0.1278
           echo "id=$DEVICE_ID" >> "$GITHUB_OUTPUT"
 
-      - name: Walk through the app and take screenshots
+      - name: Walk through the app (light, then large text)
         run: |
           set -o pipefail
           xcodebuild test \
@@ -80,18 +80,38 @@ jobs:
             -scheme Lowtide \
             -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.id }}" \
             -derivedDataPath build \
-            -resultBundlePath screenshots.xcresult \
-            -only-testing:LowtideUITests \
+            -resultBundlePath light.xcresult \
+            -only-testing:LowtideUITests/ScreenshotTests/test1LightJourney \
+            -only-testing:LowtideUITests/ScreenshotTests/test3LargeText \
             CODE_SIGNING_ALLOWED=NO \
-            2>&1 | tee ui-tests.log
+            2>&1 | tee ui-tests-light.log
+
+      - name: Walk through the app in dark mode
+        if: always()
+        run: |
+          set -o pipefail
+          xcrun simctl ui "${{ steps.sim.outputs.id }}" appearance dark
+          xcodebuild test-without-building \
+            -project Lowtide.xcodeproj \
+            -scheme Lowtide \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.id }}" \
+            -derivedDataPath build \
+            -resultBundlePath dark.xcresult \
+            -only-testing:LowtideUITests/ScreenshotTests/test2DarkMode \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee ui-tests-dark.log
 
       - name: Export screenshots
         if: always()
         run: |
-          mkdir -p screenshots
-          xcrun xcresulttool export attachments --path screenshots.xcresult --output-path screenshots
-          python3 .github/scripts/name_screenshots.py screenshots
-          ls -la screenshots
+          for bundle in light dark; do
+            if [ -d "$bundle.xcresult" ]; then
+              mkdir -p "screenshots/$bundle"
+              xcrun xcresulttool export attachments --path "$bundle.xcresult" --output-path "screenshots/$bundle"
+              python3 .github/scripts/name_screenshots.py "screenshots/$bundle"
+            fi
+          done
+          ls -laR screenshots
 
       - name: Upload screenshots
         if: always()

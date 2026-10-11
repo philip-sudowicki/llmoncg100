@@ -27,7 +27,7 @@ final class ScreenshotTests: XCTestCase {
         waitForMap(app)
         snap("03 map")
 
-        if tap(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Marlow Street Library")).firstMatch) {
+        if tap(row("Marlow Street Library", in: app)) {
             pause(2)
             snap("04 place top")
             app.swipeUp()
@@ -39,6 +39,18 @@ final class ScreenshotTests: XCTestCase {
             app.swipeUp()
             pause(1)
             snap("07 place good to know")
+            if tap(app.buttons["How's the tide?"]) {
+                pause(2)
+                snap("09 check-in")
+                tap(app.buttons["Calm"].firstMatch)
+                tap(app.buttons["Chatter"].firstMatch)
+                snap("10 check-in chosen")
+                app.swipeUp()
+                pause(1)
+                snap("10b check-in sound")
+                tap(app.buttons["Cancel"])
+                pause(2)
+            }
             app.swipeDown()
             app.swipeDown()
             app.swipeDown()
@@ -48,17 +60,7 @@ final class ScreenshotTests: XCTestCase {
                 snap("08 directions")
             }
             tap(app.buttons["Close"])
-            pause(1)
-        }
-
-        if tap(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "How's the tide where you are")).firstMatch) {
             pause(2)
-            snap("09 check-in")
-            tap(app.buttons["Calm"].firstMatch)
-            tap(app.buttons["Chatter"].firstMatch)
-            snap("10 check-in chosen")
-            tap(app.buttons["Cancel"])
-            pause(1)
         }
 
         if tap(app.buttons["Find low water"]) {
@@ -90,18 +92,25 @@ final class ScreenshotTests: XCTestCase {
         allowLocationIfAsked()
         waitForMap(app)
         snap("21 dark map")
-        if tap(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Marlow Street Library")).firstMatch) {
+        if tap(row("Marlow Street Library", in: app)) {
             pause(2)
             snap("22 dark place top")
             app.swipeUp()
             pause(1)
             snap("23 dark place chart")
             tap(app.buttons["Close"])
+            pause(2)
         }
         if tap(app.buttons["Tide profile"]) {
             pause(1)
             snap("24 dark profile")
             tap(app.buttons["Back to map without saving"])
+            pause(2)
+        }
+        if tap(app.buttons["Find low water"]) {
+            pause(6)
+            snap("25 dark find low water")
+            tap(app.buttons["Close"])
         }
     }
 
@@ -116,7 +125,7 @@ final class ScreenshotTests: XCTestCase {
         app.swipeUp()
         pause(1)
         snap("32 large sheet raised")
-        if tap(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Marlow Street Library")).firstMatch) {
+        if tap(row("Marlow Street Library", in: app)) {
             pause(2)
             snap("33 large place top")
             app.swipeUp()
@@ -125,8 +134,12 @@ final class ScreenshotTests: XCTestCase {
             app.swipeUp()
             pause(1)
             snap("35 large place how it feels")
-            tap(app.buttons["Close"])
+            app.swipeDown()
+            app.swipeDown()
+            app.swipeDown()
             pause(1)
+            tap(app.buttons["Close"])
+            pause(2)
         }
         if tap(app.buttons["Tide profile"]) {
             pause(1)
@@ -135,6 +148,7 @@ final class ScreenshotTests: XCTestCase {
             pause(1)
             snap("37 large profile alerts")
             tap(app.buttons["Back to map without saving"])
+            pause(2)
         }
         if tap(app.buttons["Find low water"]) {
             pause(6)
@@ -159,11 +173,28 @@ final class ScreenshotTests: XCTestCase {
         }
     }
 
+    /// Factors in the order the profile lists them.
+    private static let factors = ["Loud noise", "Sudden sounds", "Bright or flickering light", "Crowds", "Strong smells"]
+
     private func choose(_ option: String, for factor: String, in app: XCUIApplication) {
-        let control = app.segmentedControls.matching(NSPredicate(format: "label == %@ OR identifier == %@", factor, factor)).firstMatch
-        if control.waitForExistence(timeout: 2) {
-            tap(control.buttons[option])
+        guard let index = Self.factors.firstIndex(of: factor) else { return }
+        let named = app.segmentedControls.matching(NSPredicate(format: "label == %@", factor)).firstMatch
+        if named.waitForExistence(timeout: 2), tap(named.buttons[option]) {
+            return
         }
+        if app.segmentedControls.count == Self.factors.count, tap(app.segmentedControls.element(boundBy: index).buttons[option]) {
+            return
+        }
+        // Each row has one button per option, in factor order.
+        let buttons = app.buttons.matching(identifier: option)
+        if buttons.count >= Self.factors.count {
+            tap(buttons.element(boundBy: index))
+        }
+    }
+
+    /// A row in the sheet's list, rather than the pin, which reads "Name, calm until…".
+    private func row(_ name: String, in app: XCUIApplication) -> XCUIElement {
+        app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "\(name), Calm")).firstMatch
     }
 
     /// Accepts the location prompt so the map shows the simulator's location.

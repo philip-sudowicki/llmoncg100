@@ -169,7 +169,10 @@ final class LowWaterFinder {
     private func makeResult(_ chosen: PlaceSnapshot, eta: WalkingETA?, route: MKRoute?) -> LowWaterResult {
         let minutes = route.map { max(1, Int(($0.expectedTravelTime / 60).rounded())) } ?? eta?.minutes ?? chosen.walkMinutes
         let metres = route?.distance ?? eta?.distance ?? chosen.distance * Walking.detourFactor
-        let step = route?.steps.first { !$0.instructions.trimmingCharacters(in: .whitespaces).isEmpty }
+        // The first real turn: skip the empty start step and zero-length "Proceed to the route".
+        let step = route?.steps.first { step in
+            !step.instructions.trimmingCharacters(in: .whitespaces).isEmpty && step.distance >= 1
+        }
         return LowWaterResult(
             place: chosen.place,
             location: chosen.location,
