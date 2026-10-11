@@ -41,6 +41,17 @@
                ReferencedContainer = "container:Lowtide.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "622C5DC4DCBA0F0D531412FE"
+               BuildableName = "LowtideUITests.xctest"
+               BlueprintName = "LowtideUITests"
+               ReferencedContainer = "container:Lowtide.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -25,16 +25,7 @@ jobs:
       - name: Pick an available iPhone simulator
         id: sim
         run: |
-          DEVICE_ID=$(xcrun simctl list devices available --json | python3 -c '
-          import json, sys
-          data = json.load(sys.stdin)["devices"]
-          runtimes = sorted((r for r in data if "iOS" in r), key=lambda r: [int(p) for p in r.split("iOS-")[-1].split("-")], reverse=True)
-          for runtime in runtimes:
-              for device in data[runtime]:
-                  if device["name"].startswith("iPhone") and device["isAvailable"]:
-                      print(device["udid"]); sys.exit(0)
-          sys.exit("No available iPhone simulator")
-          ')
+          DEVICE_ID=$(python3 .github/scripts/pick_simulator.py)
           echo "Using simulator $DEVICE_ID"
           xcrun simctl list devices available | grep "$DEVICE_ID"
           echo "id=$DEVICE_ID" >> "$GITHUB_OUTPUT"
@@ -47,6 +38,7 @@ jobs:
             -scheme Lowtide \
             -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.id }}" \
             -derivedDataPath build \
+            -skip-testing:LowtideUITests \
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee xcodebuild.log
 
@@ -63,3 +55,48 @@ jobs:
             exit 1
           fi
           echo "No warnings."
+
+  screenshots:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Boot an iPhone simulator in central London
+        id: sim
+        run: |
+          DEVICE_ID=$(python3 .github/scripts/pick_simulator.py)
+          echo "Using simulator $DEVICE_ID"
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+          xcrun simctl location "$DEVICE_ID" set 51.5074,-0.1278
+          echo "id=$DEVICE_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Walk through the app and take screenshots
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Lowtide.xcodeproj \
+            -scheme Lowtide \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.id }}" \
+            -derivedDataPath build \
+            -resultBundlePath screenshots.xcresult \
+            -only-testing:LowtideUITests \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee ui-tests.log
+
+      - name: Export screenshots
+        if: always()
+        run: |
+          mkdir -p screenshots
+          xcrun xcresulttool export attachments --path screenshots.xcresult --output-path screenshots
+          python3 .github/scripts/name_screenshots.py screenshots
+          ls -la screenshots
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots
+          retention-days: 14
