@@ -98,6 +98,7 @@ struct TideChartCard: View {
                             if let tick = value.as(Int.self) {
                                 Text(TideText.clock(tick))
                                     .foregroundStyle(.inkSecondary)
+                                    .fixedSize()
                             }
                         }
                     }
@@ -122,10 +123,11 @@ struct TideChartCard: View {
         }
     }
 
-    /// One tick every three hours, starting on the first whole hour after opening.
+    /// One tick every three hours, starting on the first whole hour after opening. A tick right at
+    /// closing time is left out, because its label would be cut off at the chart's edge.
     static func ticks(for hours: OpeningHours) -> [Int] {
         let first = Int((Double(hours.opens) / 60).rounded(.up)) * 60
-        return Array(stride(from: first, through: hours.closes, by: 180))
+        return Array(stride(from: first, through: hours.closes - 45, by: 180))
     }
 
     private func summary(curve: [TidePoint], bestText: String, takeaway: String, isOpen: Bool, nowScore: Double) -> String {

@@ -4,6 +4,13 @@ Lowtide is an iPhone app for people with sensory sensitivities, such as autistic
 
 This is version 1. It uses SwiftUI, Apple Maps, Swift Charts and SwiftData, with no third-party packages, no backend, no account and no tracking. The only network requests are Apple's own walking directions.
 
+<p>
+  <img src="docs/screenshots/map.png" width="200" alt="Map with calm places and the Low tide near you sheet">
+  <img src="docs/screenshots/place.png" width="200" alt="Marlow Street Library: low tide now, with today's tide chart">
+  <img src="docs/screenshots/check-in.png" width="200" alt="Check-in: How's the tide?">
+  <img src="docs/screenshots/find-low-water.png" width="200" alt="Find low water, with the breathing circle">
+</p>
+
 ## Run it
 
 1. Open `Lowtide.xcodeproj` in **Xcode 16 or later**. CI builds with Xcode 26.6.
@@ -20,6 +27,8 @@ xcodebuild test -project Lowtide.xcodeproj -scheme Lowtide \
 ```
 
 GitHub Actions (`.github/workflows/ios.yml`) runs the same build and tests on every push to `main` or a `claude/*` branch, and on pull requests. The run fails on any compiler, linker or asset-catalog warning.
+
+A second job runs the UI tests in `LowtideUITests/`. They walk through every screen at 2pm with the simulator set to central London, in light mode, in dark mode and at an accessibility text size, and screenshot each step. The screenshots are uploaded as the run's `screenshots` artifact, so you can check the screens without a Mac.
 
 ### Seeing calm places at any time of day
 
@@ -62,6 +71,7 @@ Lowtide/
   Features/       Map, Place, CheckIn, LowWater, Profile
   Assets.xcassets Colour tokens (light, dark and high-contrast variants) and a placeholder icon
 LowtideTests/     Engine, wording, filtering and sample-data tests
+LowtideUITests/   Screenshot walkthrough used by CI
 ```
 
 ## Privacy
